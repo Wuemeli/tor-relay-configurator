@@ -29,8 +29,11 @@ const options1 = ref({
     plotOptions: {
         bar: {
             borderRadius: 10,
-            borderRadiusApplication: "around",
+            borderRadiusApplication: "around",  
         },
+    },
+      theme: {
+        mode: 'dark'
     },
     xaxis: {
         type: 'datetime',
@@ -57,6 +60,9 @@ const options1 = ref({
 const options2 = ref({
     chart: {
         type: "line",
+    },
+      theme: {
+        mode: 'dark'
     },
     plotOptions: {
         bar: {
