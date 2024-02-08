@@ -169,9 +169,6 @@ elif [ "$OS" == "CentOS" ]; then
 fi
 
 echoInfo "Setting Tor config..."
-cat << 'EOF' | sudo tee /etc/tor/torrc > /dev/null && echoSuccess "-> OK" || handleError
-%TORRC%
-EOF
 
 if $nodeType == "relay"
 then
