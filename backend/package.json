@@ -3,9 +3,10 @@
   "module": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "bun dist/index.js",
+    "start": "bun src/index.ts",
     "dev": "bun --watch src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "nodestart": "node ./dist/index.js",
   },
   "devDependencies": {
     "@types/bun": "latest"
