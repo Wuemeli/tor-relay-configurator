@@ -176,7 +176,7 @@ then
 
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
 Nickname $relayName
-ContactInfo $contactInfo [tor-relay.co]
+ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
 ExitPolicy reject *:*
@@ -192,7 +192,7 @@ then
 
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
 Nickname $relayName
-ContactInfo $contactInfo [tor-relay.co]
+ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
 ExitPolicy accept *:*
@@ -209,7 +209,7 @@ then
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
 BridgeRelay 1
 Nickname $relayName
-ContactInfo $contactInfo [tor-relay.co]
+ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
 Exitpolicy reject *:*

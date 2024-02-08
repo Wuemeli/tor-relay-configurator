@@ -15,7 +15,7 @@ const onionoo = new Onionoo({
 export default async function statsupdate() {
     console.log('Updating stats');
     const query = {
-        contact: 'tor-relay.co',
+        contact: 'tor-relay.dev',
         limit: 1000,
         running: true,
     };
