@@ -2,7 +2,6 @@
     <div class="p-6 container mx-auto px-4 bg-background text-text">
         <h1 class="text-4xl font-bold">Tor Relay Configurator</h1>
         <p class="mt-2 text-text">Be sure to have curl and sudo installed on your system.</p>
-        <p class="mt-2 text-text">Currently we only support: Arch Linux, Debian, Ubuntu, CentOS</p>
         <br>
         <form>
             <div class="mb-4">
@@ -63,9 +62,11 @@
             <div class="mb-4">
                 <label for="trafficLimit" class="block text-text text-sm font-bold mb-2">Total (Up + Down) monthly traffic
                     limit (empty for no limit)</label>
-                <input id="trafficLimit" type="text" v-model="trafficLimit"
-                    class="shadow appearance-none border rounded w-full py-2 px-3   text-text leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="e.g. 10TB">
+                <input id="trafficLimit" type="text" v-model="trafficLimit" @input="validateTrafficLimit($event)"
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="e.g.  10TB">
+                <span v-if="!isTrafficLimitValid" class="text-red-500 text-xs">Invalid traffic limit format. Must be a
+                    number followed by TB, GB, or MB.</span>
             </div>
             <div class="mb-4 flex">
                 <div class="flex-1 mr-2">
@@ -93,11 +94,11 @@
             </div>
         </div>
 
-    <div class="mt-4 text-center text-gray-500 text-xs">
-        We do not take any responsibility for the use of this tool.
-        By using our script your relay nickname and bandwidth will be counted in the global statistics panel on the top
-        right. This is anonymous. We only save Bandwidth and Nickname. We do not save any other information. 
-    </div>
+        <div class="mt-4 text-center text-gray-500 text-xs">
+            We do not take any responsibility for the use of this tool.
+            By using our script your relay nickname and bandwidth will be counted in the global statistics panel on the top
+            right. This is anonymous. We only save Bandwidth and Nickname. We do not save any other information.
+        </div>
 
     </div>
 </template>
@@ -116,8 +117,16 @@ export default {
             trafficLimit: '',
             maxBandwidth: '',
             maxBurstBandwidth: '',
-            enableNyxMonitoring: false
+            enableNyxMonitoring: false,
+            isTrafficLimitValid: false
         };
+    },
+    methods: {
+        validateTrafficLimit(event) {
+            const value = event.target.value;
+            const regex = /^\s*(\d+(\.\d+)?\s*(TB|GB|MB))\s*$/i;
+            this.isTrafficLimitValid = regex.test(value);
+        }
     },
     computed: {
         configText() {

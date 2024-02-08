@@ -1,5 +1,11 @@
 #!/bin/bash
 
+set -e
+
+# Uninstall tor
+# systemctl stop tor
+# apt-get remove tor -y
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --os)
@@ -52,6 +58,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+echo "OS: $os"
 echo "Node Type: $nodeType"
 echo "Relay Name: $relayName"
 echo "Contact Info: $contactInfo"
@@ -103,27 +110,27 @@ echo "              [Relay Setup]"
 echo "This script will ask for your sudo password."
 echo "----------------------------------------------------------------------"
 
-echoInfo "Updating package list..."
 
-if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
+if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
   sudo apt update && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "arch" ]; then
+elif [ "$os" == "arch" ]; then
   sudo pacman -Sy && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "centos" ]; then
+elif [ "$os" == "centos" ]; then
   sudo yum -y update && echoSuccess "-> OK" || handleError
 fi
 
 echoInfo "Installing necessary packages..."
 
-if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
-  sudo apt -y install apt-transport-https psmisc dirmngr && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "arch" ]; then
-  sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "centos" ]; then
-  sudo yum -y install epel-release tor && echoSuccess "-> OK" || handleError
+if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
+  sudo apt -y install apt-transport-https psmisc dirmngr lsb-release curl && echoSuccess "-> OK" || handleError
+elif [ "$os" == "arch" ]; then
+  sudo pacman -S --noconfirm tor lsb-release curl && echoSuccess "-> OK" || handleError
+elif [ "$os" == "centos" ]; then
+  sudo yum -y install epel-release tor lsb-release curl && echoSuccess "-> OK" || handleError
 fi
 
-if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
+if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
+  RELEASE=$(lsb_release -cs)
   echoInfo "Adding Torproject apt repository..."
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
   echo "deb https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
@@ -137,12 +144,12 @@ if $INSTALL_NYX
 then
   echoInfo "Installing Nyx..."
 
-  if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
+  if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
     sudo apt-get -y install python3-distutils || echoError "-> Error installing python3-distutils"
     sudo apt-get -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via apt or pip"
-  elif [ "$OS" == "arch" ]; then
+  elif [ "$os" == "arch" ]; then
     sudo pacman -S --noconfirm nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via pacman"
-  elif [ "$OS" == "centos" ]; then
+  elif [ "$os" == "centos" ]; then
     sudo yum -y install epel-release && sudo yum -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via yum or pip"
   else
     echoError "Nyx installation is not supported on this platform."
@@ -151,12 +158,12 @@ fi
 
 echoInfo "Installing Tor..."
 
-if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
+if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
   sudo apt-get install tor deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
   sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "arch" ]; then
+elif [ "$os" == "arch" ]; then
   sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "centos" ]; then
+elif [ "$os" == "centos" ]; then
   sudo yum -y install tor && echoSuccess "-> OK" || handleError
 fi
 
@@ -173,7 +180,8 @@ ContactInfo $contactInfo [tor-relay.co]
 ORPort $orPort
 DirPort $dirPort
 ExitPolicy reject *:*
-TrafficRate $trafficLimit
+AccountingMax $trafficLimit
+AccountingStart month 1 00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
@@ -188,7 +196,8 @@ ContactInfo $contactInfo [tor-relay.co]
 ORPort $orPort
 DirPort $dirPort
 ExitPolicy accept *:*
-TrafficRate $trafficLimit
+AccountingMax $trafficLimit
+AccountingStart month 1 00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
@@ -204,6 +213,10 @@ ContactInfo $contactInfo [tor-relay.co]
 ORPort $orPort
 DirPort $dirPort
 Exitpolicy reject *:*
+AccountingMax $trafficLimit
+AccountingStart month 1 00:00
+RelayBandwidthRate $maxBandwidth
+RelayBandwidthBurst $maxBurstBandwidth
 EOF
 
 fi
@@ -265,19 +278,13 @@ fi
 sleep 10
 
 echoInfo "Reloading Tor config..."
-if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
-  sudo systemctl reload tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "arch" ]; then
-  sudo systemctl reload tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "centos" ]; then
-  sudo systemctl reload tor && echoSuccess "-> OK" || handleError
-fi
+sudo systemctl reload tor && echoSuccess "-> OK" || handleError
 
 echo ""
 echoSuccess "=> Setup finished"
 echo ""
 echo "Be sure to setup automatic security updates for your system."
-echo "Also be sure that your Firewall is forwarding the ORPORT: $orPort and DIRPORT: $dirPort to your server."
+echo "Also be sure that your Firewall is forwarding the ORPORT: $orPort and DIRPORT: $dirPort (Dirport is not needed for bridges and middle relays)"
 echo "Tor will now check if your ports are reachable. This may take up to 20 minutes."
 echo "Check /var/log/tor/notices.log for an entry like:"
 echo "\"Self-testing indicates your ORPort is reachable from the outside. Excellent.\""
