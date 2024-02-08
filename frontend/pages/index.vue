@@ -7,8 +7,8 @@
             </div>
             <ConfigForm />
         </div>
-        <div class="ml-auto">
-            <Donate />
+        <div class="">
+            <Donate class="pl-8" />
         </div>
     </div>
 </template>

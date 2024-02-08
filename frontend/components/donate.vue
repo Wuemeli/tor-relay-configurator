@@ -1,5 +1,5 @@
 <template>
-    <section class="container mx-auto px-4">
+    <section class="container mx-auto">
         <h2 class="text-2xl font-bold mb-4">Donate to the TOR Network</h2>
         <ul class="list-disc list-inside">
             <li>Donate to the Tor Project: Your contribution directly benefits the people working for the Tor project and
