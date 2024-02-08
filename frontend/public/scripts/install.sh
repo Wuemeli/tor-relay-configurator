@@ -96,7 +96,7 @@ IS_MIDDLE_RELAY=false
 IS_EXIT_RELAY=false
 IS_BRIDGE=false
 
-if [ "$nodeType" == "middle" ]; then
+if [ "$nodeType" == "relay" ]; then
     IS_MIDDLE_RELAY=true
 elif [ "$nodeType" == "exit" ]; then
     IS_EXIT_RELAY=true
@@ -301,13 +301,3 @@ echo "Tor will now check if your ports are reachable. This may take up to 20 min
 echo "Check /var/log/tor/notices.log for an entry like:"
 echo "\"Self-testing indicates your ORPort is reachable from the outside. Excellent.\""
 echo ""
-
-sleep 5
-
-if [ ! -f /var/log/tor/notices.log ]; then
-  echoError "Could not find Tor logfile."
-  echo "This could indicate an error. Check syslog for error messages from Tor:"
-  echo "  /var/log/syslog | grep -i tor"
-  echo "It could also be a false positive. Wait a bit and check the log file again."
-  echo "If you chose to install nyx you can check nyx to see if Tor is running."
-fi
