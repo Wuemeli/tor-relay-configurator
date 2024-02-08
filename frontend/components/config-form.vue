@@ -15,6 +15,16 @@
                     <option value="bridge">Bridge</option>
                     <option value="exit">Exit Node (Following ReducedExitPolicy)</option>
                 </select>
+                <label for="os" class="block text-text text-sm font-bold mb-2 mt-4">Operating System*</label>
+                <select id="os" name="os" v-model="os"
+                    class="shadow appearance-none border rounded w-full py-2 px-3   text-text leading-tight focus:outline-none focus:shadow-outline"
+                    required>
+                    <option value="">Select Operating System</option>
+                    <option value="debian">Debian</option>
+                    <option value="ubuntu">Ubuntu</option>
+                    <option value="centos">CentOS</option>
+                    <option value="arch">Arch Linux</option>
+                </select>
             </div>
             <div class="mb-4">
                 <label for="relayName" class="block text-text text-sm font-bold mb-2">Relay Name*</label>
@@ -96,6 +106,7 @@
 export default {
     data() {
         return {
+            os: '',
             nodeType: '',
             relayName: '',
             contactInfo: '',
@@ -110,7 +121,7 @@ export default {
     },
     computed: {
         configText() {
-            const command = `curl -sSL http://localhost:3000/scripts/install.sh | bash -s -- --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --enable-ipv6 ${this.enableIPv6} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
+            const command = `curl -sSL http://localhost:3000/scripts/install.sh | bash -s -- --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --enable-ipv6 ${this.enableIPv6} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
             return `${command}`;
         }
     }

@@ -2,6 +2,10 @@
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --os)
+            os="$2"
+            shift 2
+            ;;
         --node-type)
             nodeType="$2"
             shift 2
@@ -78,25 +82,9 @@ function echoSuccess() {
 
 function handleError() {
   echoError "-> ERROR"
-  sudo /etc/init.d/tor stop
+  sudo systemctl stop tor
   echoError "An error occured on the last setup step."
-  echoError "If you think there is a problem with this script please share information about the error and you system configuration for debugging: tor@flxn.de"
 }
-
-
-if [ -f /etc/*-release ]; then
-  OS=$(grep -oP '(?<=^ID=).+' /etc/*-release | tr -d '"')
-  RELEASE=$(grep -oP '(?<=^VERSION_CODENAME=).+' /etc/*-release | tr -d '"')
-elif [ -f /etc/arch-release ]; then
-  OS="Arch"
-  RELEASE=""
-elif [ -f /etc/centos-release ]; then
-  OS="CentOS"
-  RELEASE=""
-else
-  echo "This script only supports Debian, Ubuntu, Arch and CentOS"
-  exit 1
-fi
 
 
 echo -e $C_CYAN #cyan
@@ -117,28 +105,25 @@ echo "----------------------------------------------------------------------"
 
 echoInfo "Updating package list..."
 
-if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-  sudo apt-get update && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "Arch" ]; then
+if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
+  sudo apt update && echoSuccess "-> OK" || handleError
+elif [ "$OS" == "arch" ]; then
   sudo pacman -Sy && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "CentOS" ]; then
+elif [ "$OS" == "centos" ]; then
   sudo yum -y update && echoSuccess "-> OK" || handleError
 fi
 
 echoInfo "Installing necessary packages..."
 
-if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-  sudo apt -y install apt-transport-https psmisc dirmngr ntpdate && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "Arch" ]; then
-  sudo pacman -S --noconfirm tor ntp && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "CentOS" ]; then
-  sudo yum -y install epel-release tor ntp && echoSuccess "-> OK" || handleError
+if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
+  sudo apt -y install apt-transport-https psmisc dirmngr && echoSuccess "-> OK" || handleError
+elif [ "$OS" == "arch" ]; then
+  sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
+elif [ "$OS" == "centos" ]; then
+  sudo yum -y install epel-release tor && echoSuccess "-> OK" || handleError
 fi
 
-echoInfo "Updating NTP..."
-sudo ntpdate pool.ntp.org && echoSuccess "-> OK" || handleError
-
-if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
+if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
   echoInfo "Adding Torproject apt repository..."
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
   echo "deb https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
@@ -152,12 +137,12 @@ if $INSTALL_NYX
 then
   echoInfo "Installing Nyx..."
 
-  if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
+  if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
     sudo apt-get -y install python3-distutils || echoError "-> Error installing python3-distutils"
     sudo apt-get -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via apt or pip"
-  elif [ "$OS" == "Arch" ]; then
+  elif [ "$OS" == "arch" ]; then
     sudo pacman -S --noconfirm nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via pacman"
-  elif [ "$OS" == "CentOS" ]; then
+  elif [ "$OS" == "centos" ]; then
     sudo yum -y install epel-release && sudo yum -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via yum or pip"
   else
     echoError "Nyx installation is not supported on this platform."
@@ -166,12 +151,12 @@ fi
 
 echoInfo "Installing Tor..."
 
-if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
+if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
   sudo apt-get install tor deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
   sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "Arch" ]; then
+elif [ "$OS" == "arch" ]; then
   sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "CentOS" ]; then
+elif [ "$OS" == "centos" ]; then
   sudo yum -y install tor && echoSuccess "-> OK" || handleError
 fi
 
@@ -280,11 +265,11 @@ fi
 sleep 10
 
 echoInfo "Reloading Tor config..."
-if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
+if [ "$OS" == "debian" ] || [ "$OS" == "ubuntu" ]; then
   sudo systemctl reload tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "Arch" ]; then
+elif [ "$OS" == "arch" ]; then
   sudo systemctl reload tor && echoSuccess "-> OK" || handleError
-elif [ "$OS" == "CentOS" ]; then
+elif [ "$OS" == "centos" ]; then
   sudo systemctl reload tor && echoSuccess "-> OK" || handleError
 fi
 
