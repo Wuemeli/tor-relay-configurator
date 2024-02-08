@@ -1,0 +1,71 @@
+name: Ubuntu Test Script
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-middle-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run middle install script
+      run: bash ./frontend/public/scripts/install.sh
+      env:
+        NODE_TYPE: 'middle'
+        RELAY_NAME: 'test-middle-relay'
+        CONTACT_INFO: 'test@example.com'
+        ENABLE_IPV6: 'false'
+        OR_PORT: '9001'
+        DIR_PORT: '9030'
+        TRAFFIC_LIMIT: '1 GB'
+        MAX_BANDWIDTH: '1 GB'
+        MAX_BURST_BANDWIDTH: '1 GB'
+        ENABLE_NYX_MONITORING: 'false'
+
+  test-exit-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run exit install script
+      run: bash ./frontend/public/scripts/install.sh
+      env:
+        NODE_TYPE: 'exit'
+        RELAY_NAME: 'test-exit-relay'
+        CONTACT_INFO: 'test@example.com'
+        ENABLE_IPV6: 'false'
+        OR_PORT: '9001'
+        DIR_PORT: '9030'
+        TRAFFIC_LIMIT: '1 GB'
+        MAX_BANDWIDTH: '1 GB'
+        MAX_BURST_BANDWIDTH: '1 GB'
+        ENABLE_NYX_MONITORING: 'false'
+
+  test-bridge-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run bridge install script
+      run: bash ./frontend/public/scripts/install.sh
+      env:
+        NODE_TYPE: 'bridge'
+        RELAY_NAME: 'test-bridge-relay'
+        CONTACT_INFO: 'test@example.com'
+        ENABLE_IPV6: 'false'
+        OR_PORT: '9001'
+        DIR_PORT: '9030'
+        TRAFFIC_LIMIT: '1 GB'
+        MAX_BANDWIDTH: '1 GB'
+        MAX_BURST_BANDWIDTH: '1 GB'
+        ENABLE_NYX_MONITORING: 'false'
