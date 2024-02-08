@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Run middle install script
       run: bash ./frontend/public/scripts/install.sh -s -- --node-type relay --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Run exit install script
       run: bash ./frontend/public/scripts/install.sh -s -- --node-type exit --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
@@ -33,7 +33,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Run bridge install script
       run: bash ./frontend/public/scripts/install.sh -s -- --node-type bridge --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
