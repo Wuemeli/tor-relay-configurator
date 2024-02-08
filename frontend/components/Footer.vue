@@ -3,7 +3,7 @@
         <p class="mb-2">Made with 💖 by <a href="https://github.com/wuemeli" target="_blank" rel="noopener noreferrer"
                 class="underline">Wuemeli</a></p>
     <p class="mb-0"><a href="https://github.com/flxn/tor-relay-configurator" target="_blank" rel="noopener noreferrer"
-       class="underline">Credits</a> | <a href="https://reddit.com" target="_blank" rel="noopener noreferrer"
+       class="underline">Credits</a> | <a href="https://github.com/Wuemeli/tor-relay-configurator" target="_blank" rel="noopener noreferrer"
        class="underline">Repo</a></p>
     </footer>
 </template>
