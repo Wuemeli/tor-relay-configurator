@@ -226,8 +226,6 @@ Exitpolicy reject *:*
 EOF
 
 fi
-
-fi
 if $IS_EXIT
 then
   echoInfo "Downloading Exit Notice to /etc/tor/tor-exit-notice.html..."
