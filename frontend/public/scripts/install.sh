@@ -170,7 +170,7 @@ fi
 
 echoInfo "Setting Tor config..."
 
-if $nodeType == "relay"
+if [ "$nodeType" = "relay" ]
 then
 
   echoInfo "Configuring Tor as a middle relay..."
@@ -182,7 +182,7 @@ ORPort $orPort
 DirPort $dirPort
 EOF
 
-elif $nodeType == "exit"  
+elif [ "$nodeType" = "exit" ]
 then
   echoInfo "Configuring Tor as an exit relay..."
 
@@ -197,7 +197,7 @@ RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
 
-elif $nodeType == "bridge"
+elif [ "$nodeType" = "bridge" ]
 then
   echoInfo "Configuring Tor as a bridge..."
 
