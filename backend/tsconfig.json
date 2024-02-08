@@ -2,14 +2,14 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "CommonJS",
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
     "esModuleInterop": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "moduleResolution": "node"
   },
-  "moduleResolution": "bundler",
   "allowImportingTsExtensions": true,
   "verbatimModuleSyntax": true,
   "noEmit": true,

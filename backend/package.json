@@ -1,7 +1,6 @@
 {
   "name": "backend",
   "module": "dist/index.js",
-  "type": "module",
   "scripts": {
     "start": "bun src/index.ts",
     "dev": "bun --watch src/index.ts",
@@ -9,10 +8,11 @@
     "nodestart": "node ./dist/index.js"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "typescript": "^5.3.3",
-    "ts-node": "^10.9.2",
-    "@types/node": "^20.11.17"
+    "@types/node": "^20.11.17",
+    "ts-node": "^10.9.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   },
   "dependencies": {
     "@types/cors": "^2.8.17",
