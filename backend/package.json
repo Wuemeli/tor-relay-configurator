@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "module": "src/index.ts",
+  "module": "dist/index.js",
   "type": "module",
   "scripts": {
     "start": "bun src/index.js",
