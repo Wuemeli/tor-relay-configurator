@@ -33,7 +33,7 @@ export default {
     methods: {
         async fetchLeaderboardData() {
             try {
-                const response = await fetch('http://api.tor-relay.dev/api/statistics/top10');
+                const response = await fetch('https://api.tor-relay.dev/api/statistics/top10');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

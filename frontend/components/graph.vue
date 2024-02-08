@@ -114,7 +114,7 @@ const series2 = ref([
 
 onMounted(async () => {
     try {
-        const response = await fetch('http://api.tor-relay.dev/api/statistics/graph');
+        const response = await fetch('https://api.tor-relay.dev/api/statistics/graph');
         const data = await response.json();
         series1.value[0].data = data.servers.map(item => [item.date, item.value]);
         series1.value[1].data = data.bridges.map(item => [item.date, item.value]);
