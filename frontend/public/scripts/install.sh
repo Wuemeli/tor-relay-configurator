@@ -83,13 +83,21 @@ function handleError() {
   echoError "If you think there is a problem with this script please share information about the error and you system configuration for debugging: tor@flxn.de"
 }
 
-RELEASE=$(lsb_release -cs)
-OS=$(lsb_release -is)
 
-if [ "$OS" != "Debian" ] && [ "$OS" != "Ubuntu" ] && [ "$OS" != "Arch" ] && [ "$OS" != "CentOS" ]; then
-  echoError "This script only supports Debian, Ubuntu, Arch and CentOS"
+if [ -f /etc/*-release ]; then
+  OS=$(grep -oP '(?<=^ID=).+' /etc/*-release | tr -d '"')
+  RELEASE=$(grep -oP '(?<=^VERSION_CODENAME=).+' /etc/*-release | tr -d '"')
+elif [ -f /etc/arch-release ]; then
+  OS="Arch"
+  RELEASE=""
+elif [ -f /etc/centos-release ]; then
+  OS="CentOS"
+  RELEASE=""
+else
+  echo "This script only supports Debian, Ubuntu, Arch and CentOS"
   exit 1
 fi
+
 
 echo -e $C_CYAN #cyan
 cat << "EOF"
@@ -110,34 +118,34 @@ echo "----------------------------------------------------------------------"
 echoInfo "Updating package list..."
 
 if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-  sudo apt-get -y update > /dev/null && echoSuccess "-> OK" || handleError
+  sudo apt-get update && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "Arch" ]; then
-  sudo pacman -Sy > /dev/null && echoSuccess "-> OK" || handleError
+  sudo pacman -Sy && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "CentOS" ]; then
-  sudo yum -y update > /dev/null && echoSuccess "-> OK" || handleError
+  sudo yum -y update && echoSuccess "-> OK" || handleError
 fi
 
 echoInfo "Installing necessary packages..."
 
 if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-  sudo apt-get -y install apt-transport-https psmisc dirmngr ntpdate > /dev/null && echoSuccess "-> OK" || handleError
+  sudo apt -y install apt-transport-https psmisc dirmngr ntpdate && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "Arch" ]; then
-  sudo pacman -S --noconfirm tor ntp > /dev/null && echoSuccess "-> OK" || handleError
+  sudo pacman -S --noconfirm tor ntp && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "CentOS" ]; then
-  sudo yum -y install epel-release tor ntp > /dev/null && echoSuccess "-> OK" || handleError
+  sudo yum -y install epel-release tor ntp && echoSuccess "-> OK" || handleError
 fi
 
 echoInfo "Updating NTP..."
-sudo ntpdate pool.ntp.org > /dev/null && echoSuccess "-> OK" || handleError
+sudo ntpdate pool.ntp.org && echoSuccess "-> OK" || handleError
 
 if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
   echoInfo "Adding Torproject apt repository..."
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
-  echo "deb https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list > /dev/null && echoSuccess "-> tee1 OK" || handleError
-  echo "deb-src https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee --append /etc/apt/sources.list.d/tor.list > /dev/null && echoSuccess "-> tee2 OK" || handleError
+  echo "deb https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
+  echo "deb-src https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee --append /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee2 OK" || handleError
   echoInfo "Adding Torproject GPG key..."
   curl https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | sudo apt-key add - && echoSuccess "-> OK" || handleError
-  sudo apt-get -y update > /dev/null && echoSuccess "-> OK" || handleError
+  sudo apt-get -y update && echoSuccess "-> OK" || handleError
 fi
 
 if $INSTALL_NYX
@@ -145,12 +153,12 @@ then
   echoInfo "Installing Nyx..."
 
   if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-    sudo apt-get -y install python3-distutils > /dev/null || echoError "-> Error installing python3-distutils"
-    sudo apt-get -y install nyx > /dev/null && echoSuccess "-> OK" || sudo pip install nyx > /dev/null && echoSuccess "-> OK" || echoError "-> Error installing Nyx via apt or pip"
+    sudo apt-get -y install python3-distutils || echoError "-> Error installing python3-distutils"
+    sudo apt-get -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via apt or pip"
   elif [ "$OS" == "Arch" ]; then
-    sudo pacman -S --noconfirm nyx > /dev/null && echoSuccess "-> OK" || echoError "-> Error installing Nyx via pacman"
+    sudo pacman -S --noconfirm nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via pacman"
   elif [ "$OS" == "CentOS" ]; then
-    sudo yum -y install epel-release > /dev/null && sudo yum -y install nyx > /dev/null && echoSuccess "-> OK" || sudo pip install nyx > /dev/null && echoSuccess "-> OK" || echoError "-> Error installing Nyx via yum or pip"
+    sudo yum -y install epel-release && sudo yum -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via yum or pip"
   else
     echoError "Nyx installation is not supported on this platform."
   fi
@@ -159,12 +167,12 @@ fi
 echoInfo "Installing Tor..."
 
 if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-  sudo apt-get -y install tor deb.torproject.org-keyring > /dev/null && echoSuccess "-> OK" || handleError
+  sudo apt-get install tor deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
   sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "Arch" ]; then
-  sudo pacman -S --noconfirm tor > /dev/null && echoSuccess "-> OK" || handleError
+  sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "CentOS" ]; then
-  sudo yum -y install tor > /dev/null && echoSuccess "-> OK" || handleError
+  sudo yum -y install tor && echoSuccess "-> OK" || handleError
 fi
 
 echoInfo "Setting Tor config..."
@@ -179,6 +187,10 @@ Nickname $relayName
 ContactInfo $contactInfo [tor-relay.co]
 ORPort $orPort
 DirPort $dirPort
+ExitPolicy reject *:*
+TrafficRate $trafficLimit
+RelayBandwidthRate $maxBandwidth
+RelayBandwidthBurst $maxBurstBandwidth
 EOF
 
 elif [ "$nodeType" = "exit" ]
@@ -269,11 +281,11 @@ sleep 10
 
 echoInfo "Reloading Tor config..."
 if [ "$OS" == "Debian" ] || [ "$OS" == "Ubuntu" ]; then
-  sudo systemctl reload tor > /dev/null && echoSuccess "-> OK" || handleError
+  sudo systemctl reload tor && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "Arch" ]; then
-  sudo systemctl reload tor > /dev/null && echoSuccess "-> OK" || handleError
+  sudo systemctl reload tor && echoSuccess "-> OK" || handleError
 elif [ "$OS" == "CentOS" ]; then
-  sudo systemctl reload tor > /dev/null && echoSuccess "-> OK" || handleError
+  sudo systemctl reload tor && echoSuccess "-> OK" || handleError
 fi
 
 echo ""
