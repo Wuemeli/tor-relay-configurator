@@ -24,9 +24,9 @@ router.get('/graph', async (req, res) => {
 
     const data = await Stats.find({ date: { $gte: last7Days } }).sort({ date: 1 });
 
-    const servers = [] as number[];
-    const bridges = [] as number[];
-    const bandwidth = [] as number[];
+    const servers = [] as Array<{ date: string; value: number }>;
+    const bridges = [] as Array<{ date: string; value: number }>;
+    const bandwidth = [] as Array<{ date: string; value: number }>;
 
     data.forEach((day: any) => {
         servers.push({ date: day.date.toISOString().split('T')[0], value: day.servers });
