@@ -15,18 +15,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Run middle install script
-      run: bash ./frontend/public/scripts/install.sh
-      env:
-        NODE_TYPE: 'relay'
-        RELAY_NAME: 'test-middle-relay'
-        CONTACT_INFO: 'test@example.com'
-        ENABLE_IPV6: 'false'
-        OR_PORT: '9001'
-        DIR_PORT: '9030'
-        TRAFFIC_LIMIT: '1 GB'
-        MAX_BANDWIDTH: '1 GB'
-        MAX_BURST_BANDWIDTH: '1 GB'
-        ENABLE_NYX_MONITORING: 'false'
+      run: bash ./frontend/public/scripts/install.sh -s -- --node-type relay --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
 
   test-exit-script:
     runs-on: ubuntu-latest
@@ -36,18 +25,8 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Run exit install script
-      run: bash ./frontend/public/scripts/install.sh
-      env:
-        NODE_TYPE: 'exit'
-        RELAY_NAME: 'test-exit-relay'
-        CONTACT_INFO: 'test@example.com'
-        ENABLE_IPV6: 'false'
-        OR_PORT: '9001'
-        DIR_PORT: '9030'
-        TRAFFIC_LIMIT: '1 GB'
-        MAX_BANDWIDTH: '1 GB'
-        MAX_BURST_BANDWIDTH: '1 GB'
-        ENABLE_NYX_MONITORING: 'false'
+      run: bash ./frontend/public/scripts/install.sh -s -- --node-type exit --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
+
 
   test-bridge-script:
     runs-on: ubuntu-latest
@@ -57,15 +36,4 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Run bridge install script
-      run: bash ./frontend/public/scripts/install.sh
-      env:
-        NODE_TYPE: 'bridge'
-        RELAY_NAME: 'test-bridge-relay'
-        CONTACT_INFO: 'test@example.com'
-        ENABLE_IPV6: 'false'
-        OR_PORT: '9001'
-        DIR_PORT: '9030'
-        TRAFFIC_LIMIT: '1 GB'
-        MAX_BANDWIDTH: '1 GB'
-        MAX_BURST_BANDWIDTH: '1 GB'
-        ENABLE_NYX_MONITORING: 'false'
+      run: bash ./frontend/public/scripts/install.sh -s -- --node-type bridge --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
