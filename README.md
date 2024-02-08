@@ -18,7 +18,7 @@
 
 ## 📰 License
 This Project is under the GNU GENERAL PUBLIC LICENSE. See the [LICENSE](LICENSE) file for more info.
-Dont remove any Credits from the Footer.
+Don't remove any Credits from the Footer.
 
 ## 📜 Contributing
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
@@ -28,5 +28,5 @@ To start look at the [Contributing.md](CONTRIBUTING.md) File.
 [![Star History Chart](https://api.star-history.com/svg?repos=Wuemeli/tor-relay-configurator&type=Date)](https://star-history.com/#Wuemeli/tor-relay-configurator&Date)
 
 ## 📝 Credits
-Thanks to https://tor-relay.co/ for the Initial Idea. As they dont support and update their project anymore, I decided to create my own version of it.
+Thanks to https://tor-relay.co/ for the Initial Idea. As they don't support and update their project anymore, I decided to create my own version of it.
 
