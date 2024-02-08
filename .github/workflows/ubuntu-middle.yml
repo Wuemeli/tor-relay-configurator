@@ -17,7 +17,7 @@ jobs:
     - name: Run middle install script
       run: bash ./frontend/public/scripts/install.sh
       env:
-        NODE_TYPE: 'middle'
+        NODE_TYPE: 'relay'
         RELAY_NAME: 'test-middle-relay'
         CONTACT_INFO: 'test@example.com'
         ENABLE_IPV6: 'false'
