@@ -130,7 +130,7 @@ export default {
     },
     computed: {
         configText() {
-            const command = `curl -sSL http://localhost:3000/scripts/install.sh | bash -s -- --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --enable-ipv6 ${this.enableIPv6} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
+            const command = `curl -sSL https://tor-relay.dev/scripts/install.sh | bash -s -- --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --enable-ipv6 ${this.enableIPv6} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
             return `${command}`;
         }
     }
