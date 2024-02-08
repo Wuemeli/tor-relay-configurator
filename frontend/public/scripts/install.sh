@@ -92,19 +92,6 @@ if [ "$OS" != "Debian" ] && [ "$OS" != "Ubuntu" ] && [ "$OS" != "Arch" ] && [ "$
   exit 1
 fi
 
-IS_MIDDLE_RELAY=false
-IS_EXIT_RELAY=false
-IS_BRIDGE=false
-
-if [ "$nodeType" == "relay" ]; then
-    IS_MIDDLE_RELAY=true
-elif [ "$nodeType" == "exit" ]; then
-    IS_EXIT_RELAY=true
-elif [ "$nodeType" == "bridge" ]; then
-    IS_BRIDGE=true
-fi
-
-
 echo -e $C_CYAN #cyan
 cat << "EOF"
 
@@ -186,8 +173,9 @@ cat << 'EOF' | sudo tee /etc/tor/torrc > /dev/null && echoSuccess "-> OK" || han
 %TORRC%
 EOF
 
-if $IS_MIDDLE_RELAY
+if $nodeType == "relay"
 then
+
   echoInfo "Configuring Tor as a middle relay..."
 
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
@@ -197,7 +185,7 @@ ORPort $orPort
 DirPort $dirPort
 EOF
 
-elif $IS_EXIT_RELAY
+elif $nodeType == "exit"  
 then
   echoInfo "Configuring Tor as an exit relay..."
 
@@ -212,7 +200,7 @@ RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
 
-elif $IS_BRIDGE
+elif $nodeType == "bridge"
 then
   echoInfo "Configuring Tor as a bridge..."
 
