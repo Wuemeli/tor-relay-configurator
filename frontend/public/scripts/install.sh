@@ -58,7 +58,6 @@ echo "Traffic Limit: $trafficLimit"
 echo "Max Bandwidth: $maxBandwidth"
 echo "Max Burst Bandwidth: $maxBurstBandwidth"
 echo "Enable Nyx Monitoring: $enableNyxMonitoring"
-"OBFS4PORT_LT_1024=$OBFS4PORT_LT_1024"
 
 C_RED="\e[31m"
 C_GREEN="\e[32m"
@@ -211,10 +210,10 @@ Exitpolicy reject *:*
 EOF
 
 fi
-if $IS_EXIT
+if [ "$nodeType" = "exit" ]
 then
   echoInfo "Downloading Exit Notice to /etc/tor/tor-exit-notice.html..."
-  echo -e "\e[1mPlease edit this file and replace FIXME_YOUR_EMAIL_ADDRESS with your e-mail address!"
+  echo -e "\e[1mPlease edit this file and replace YOUR_EMAIL_ADDRESS with your e-mail address!"
   echo -e "\e[1mAlso note that this is the US version. If you are not in the US please edit the file and remove the US-Only sections!\e[0m"
   sudo wget -q -O /etc/tor/tor-exit-notice.html "https://raw.githubusercontent.com/flxn/tor-relay-configurator/master/misc/tor-exit-notice.html" && echoSuccess "-> OK" || handleError
 fi
@@ -227,7 +226,7 @@ function disableIPV6() {
   echo "If you want to enable it manually find out your IPv6 address and add this line to your /etc/tor/torrc"
   echo "ORPort [YOUR_IPV6_ADDRESS]:YOUR_ORPORT (example: \"ORPort [2001:123:4567:89ab::1]:9001\")"
   echo "or for a bridge: ServerListenAddr obfs4 [..]:YOUR_OBFS4PORT"
-  echo "Then run \"sudo /etc/init.d/tor restart\" to restart Tor"
+  echo "Then run \"sudo systemctl restart tor\""
 }
 
 if $CHECK_IPV6
