@@ -125,7 +125,7 @@ fi
 
 echoInfo "Installing necessary packages..."
 
-$RELEASE=$(lsb_release -sc)
+RELEASE=$(lsb_release -sc)
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
 sudo apt-get -y install lsb-release curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
