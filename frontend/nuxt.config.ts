@@ -24,6 +24,15 @@ export default defineNuxtConfig({
    },
     
   css: ['~/assets/css/main.css'],
+
+  modules: ['@nuxtjs/robots', 'nuxt-simple-sitemap'],
+
+  robots: {
+    UserAgent: '*',
+    Sitemap: 'https://tor-relay.dev/sitemap.xml',
+    CleanParam: 'query',
+  },
+
   postcss: {
     plugins: {
       tailwindcss: {},

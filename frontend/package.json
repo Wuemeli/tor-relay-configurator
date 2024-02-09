@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "tor-relay-configurator",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/robots": "^3.0.0",
     "apexcharts": "^3.45.2",
     "nuxt": "^3.10.1",
     "vue": "^3.4.15",
