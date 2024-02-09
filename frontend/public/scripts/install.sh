@@ -172,19 +172,20 @@ then
     sudo yum -y install tor && echoSuccess "-> OK" || handleError
   fi
 
-  cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
+cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
 Nickname $relayName
 ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
-ExitRelay 0
-SocksPort 0 
+ExitRelay   0
+SocksPort   0   
 ExitPolicy reject *:*
 AccountingMax $trafficLimit
-AccountingStart month 1 00:00
+AccountingStart month   1   00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
+
 fi
 
 if [ "$nodeType" = "exit" ]
