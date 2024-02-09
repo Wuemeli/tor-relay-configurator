@@ -1,5 +1,5 @@
 <template>
-    <div class="p-6     ">
+    <div class="responsive-padding p-6">
         <h2 class="text-2xl font-bold mb-4">Hosting Options</h2>
         <p class="mb-4">
             You can run your Tor relay on every supported Linux machine that you have SSH access to, be it in your home, a

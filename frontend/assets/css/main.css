@@ -34,3 +34,45 @@ textarea {
     white-space: pre-wrap;
     word-break: break-word;
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-background;
+    @apply text-text;
+}
+
+input,
+select,
+textarea {
+    @apply bg-background;
+    @apply text-text;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {}
+
+#configFile {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+@layer components {
+    .responsive-padding {
+        @apply p-4 md:p-6 lg:p-8;
+    }
+
+    .responsive-margin {
+        @apply m-4 md:m-6 lg:m-8;
+    }
+}

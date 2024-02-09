@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-center space-x-4">
+    <div class="responsive-padding flex justify-center space-x-4">
         <div class="border border-gray-400 p-4 rounded">
             <h2 class="text-xl font-bold mb-4">Total Relays/Bridges</h2>
             <client-only>

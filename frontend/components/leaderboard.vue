@@ -1,5 +1,5 @@
 <template>
-    <div class="leaderboard bg-background p-6">
+    <div class="responsive-padding leaderboard bg-background p-6">
         <h2 class="text-xl font-bold mb-4">Top 10 Relays</h2>
         <ul v-if="leaderboardData.length > 0" class="list-none">
             <li v-for="(entry, index) in leaderboardData.slice(0, 3)" :key="index" class="mb-2">

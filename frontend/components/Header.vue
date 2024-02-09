@@ -1,5 +1,5 @@
 <template>
-    <header class="text-charcoal p-4">
+    <header class="responsive-padding text-charcoal p-4">
         <div class="container mx-auto flex justify-between items-center">
             <div>
                 <h1 class="text-4xl font-bold">Tor Relay Configurator</h1>

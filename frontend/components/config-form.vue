@@ -1,5 +1,5 @@
 <template>
-    <div class="p-6 container mx-auto px-4 bg-background text-text">
+    <div class="responsive-padding p-6 container mx-auto px-4 bg-background text-text">
         <h1 class="text-4xl font-bold">Tor Relay Configurator</h1>
         <p class="mt-2 text-text">Be sure to have curl and sudo installed on your system.</p>
         <br>
