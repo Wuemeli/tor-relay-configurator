@@ -6,9 +6,7 @@
                 <Hosting />
             </div>
             <ConfigForm />
-        </div>
-        <div class="">
-            <Donate class="pl-8" />
+            <Donate />
         </div>
     </div>
 </template>
