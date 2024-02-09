@@ -21,47 +21,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 
 const options1 = ref({
     chart: {
         type: "line",
     },
-    plotOptions: {
-        bar: {
-            borderRadius: 10,
-            borderRadiusApplication: "around",  
-        },
-    },
-      theme: {
-        mode: 'dark'
-    },
-    xaxis: {
-        type: 'date',
-        labels: {
-            show: true,
-            rotate: -45,
-            rotateAlways: false,
-            hideOverlappingLabels: true,
-            style: {
-                colors: ['#ffffff'],
-                fontSize: '12px',
-                fontFamily: 'Helvetica, Arial, sans-serif',
-                fontWeight: 400,
-                cssClass: 'apexcharts-xaxis-label',
-            },
-            datetimeUTC: false,
-            datetimeFormatter: {
-                day: 'dd MMM',
-            },
-        },
-    },
-});
-
-const options2 = ref({
-    chart: {
-        type: "line",
-    },
-      theme: {
+    theme: {
         mode: 'dark'
     },
     plotOptions: {
@@ -71,7 +37,7 @@ const options2 = ref({
         },
     },
     xaxis: {
-        type: 'date',
+        type: 'datetime',
         labels: {
             show: true,
             rotate: -45,
@@ -86,12 +52,58 @@ const options2 = ref({
             },
             datetimeUTC: false,
             datetimeFormatter: {
-                day: 'dd MMM',
+                year: 'yyyy',
+                month: 'MMM yyyy',
+                day: 'dd MMM yyyy',
+                hour: 'HH:mm',
+                minute: 'HH:mm',
             },
         },
+        min: null,
+        max: null,
     },
 });
 
+const options2 = ref({
+    chart: {
+        type: "line",
+    },
+    theme: {
+        mode: 'dark'
+    },
+    plotOptions: {
+        bar: {
+            borderRadius: 10,
+            borderRadiusApplication: "around",
+        },
+    },
+    xaxis: {
+        type: 'datetime',
+        labels: {
+            show: true,
+            rotate: -45,
+            rotateAlways: false,
+            hideOverlappingLabels: true,
+            style: {
+                colors: ['#ffffff'],
+                fontSize: '12px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 400,
+                cssClass: 'apexcharts-xaxis-label',
+            },
+            datetimeUTC: false,
+            datetimeFormatter: {
+                year: 'yyyy',
+                month: 'MMM yyyy',
+                day: 'dd MMM yyyy',
+                hour: 'HH:mm',
+                minute: 'HH:mm',
+            },
+        },
+        min: null,
+        max: null,
+    },
+});
 
 const series1 = ref([
     {
@@ -111,17 +123,26 @@ const series2 = ref([
     },
 ]);
 
-
 onMounted(async () => {
     try {
-        const response = await fetch('https://api.tor-relay.dev/api/statistics/graph');
+        const response = await fetch('http://localhost:3000/api/statistics/graph');
         const data = await response.json();
-        series1.value[0].data = data.servers.map(item => [item.date, item.value]);
-        series1.value[1].data = data.bridges.map(item => [item.date, item.value]);
-        series2.value[0].data = data.bandwidth.map(item => [item.date, item.value]);
+        series1.value[0].data = data.servers.map(item => [new Date(item.date), item.value]);
+        series1.value[1].data = data.bridges.map(item => [new Date(item.date), item.value]);
+        series2.value[0].data = data.bandwidth.map(item => [new Date(item.date), item.value]);
+
+        // Calculate min and max dates
+        const allDates = [...data.servers, ...data.bridges, ...data.bandwidth].map(item => new Date(item.date));
+        const minDate = Math.min(...allDates);
+        const maxDate = Math.max(...allDates);
+
+        // Update chart options with min and max dates
+        options1.value.xaxis.min = minDate;
+        options1.value.xaxis.max = maxDate;
+        options2.value.xaxis.min = minDate;
+        options2.value.xaxis.max = maxDate;
     } catch (error) {
         console.error(error);
     }
 });
-
 </script>
