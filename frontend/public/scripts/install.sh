@@ -28,6 +28,10 @@ while [[ $# -gt 0 ]]; do
             enableIPv6="$2"
             shift 2
             ;;
+        --obsf4-port)
+            obsf4Port="$2"
+            shift 2
+            ;;
         --or-port)
             orPort="$2"
             shift 2
@@ -105,14 +109,14 @@ cat << "EOF"
 
 EOF
 
-echo -e $C_DEFAULT #default
+echo -e $C_DEFAULT
 echo "              [Relay Setup]"
 echo "This script will ask for your sudo password."
 echo "----------------------------------------------------------------------"
 
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-  sudo apt update && echoSuccess "-> OK" || handleError
+  sudo apt-get update && echoSuccess "-> OK" || handleError
 elif [ "$os" == "arch" ]; then
   sudo pacman -Sy && echoSuccess "-> OK" || handleError
 elif [ "$os" == "centos" ]; then
@@ -122,48 +126,28 @@ fi
 echoInfo "Installing necessary packages..."
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-  sudo apt -y install apt-transport-https psmisc dirmngr lsb-release curl && echoSuccess "-> OK" || handleError
-elif [ "$os" == "arch" ]; then
-  sudo pacman -S --noconfirm tor lsb-release curl && echoSuccess "-> OK" || handleError
-elif [ "$os" == "centos" ]; then
-  sudo yum -y install epel-release tor lsb-release curl && echoSuccess "-> OK" || handleError
-fi
-
-if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-  RELEASE=$(lsb_release -cs)
-  echoInfo "Adding Torproject apt repository..."
+sudo apt-get -y install lsb-release curl apt-transport-https wget gpg && echoSuccess "-> OK" || handleError
+echoInfo "Adding Torproject apt repository..."
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
   echo "deb https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
   echo "deb-src https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee --append /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee2 OK" || handleError
   echoInfo "Adding Torproject GPG key..."
-  curl https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | sudo apt-key add - && echoSuccess "-> OK" || handleError
+  wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | sudo gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
   sudo apt-get -y update && echoSuccess "-> OK" || handleError
-fi
-
-if $INSTALL_NYX
-then
-  echoInfo "Installing Nyx..."
-
-  if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-    sudo apt-get -y install python3-distutils || echoError "-> Error installing python3-distutils"
-    sudo apt-get -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via apt or pip"
-  elif [ "$os" == "arch" ]; then
-    sudo pacman -S --noconfirm nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via pacman"
-  elif [ "$os" == "centos" ]; then
-    sudo yum -y install epel-release && sudo yum -y install nyx && echoSuccess "-> OK" || sudo pip install nyx && echoSuccess "-> OK" || echoError "-> Error installing Nyx via yum or pip"
-  else
-    echoError "Nyx installation is not supported on this platform."
-  fi
-fi
-
-echoInfo "Installing Tor..."
-
-if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-  sudo apt-get install tor deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
+  sudo apt-get install tor deb.torproject.org-keyring psmisc dirmngr -y && echoSuccess "-> OK" || handleError
   sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
 elif [ "$os" == "arch" ]; then
-  sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
+  sudo pacman -S --noconfirm tor lsb-release curl && echoSuccess "-> OK" || handleError
 elif [ "$os" == "centos" ]; then
+  sudo yum -y install lsb-release curl epel-release && echoSuccess "-> OK" || handleError
+  sudo touch /etc/yum.repos.d/Tor.repo && echoSuccess "-> OK" || handleError
+  echo "[tor]
+name=Tor for Enterprise Linux $releasever - $basearch
+baseurl=https://rpm.torproject.org/centos/$releasever/$basearch
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.torproject.org/centos/public_gpg.key
+cost=100 " | sudo tee /etc/yum.repos.d/Tor.repo && echoSuccess "-> OK" || handleError
   sudo yum -y install tor && echoSuccess "-> OK" || handleError
 fi
 
@@ -174,11 +158,21 @@ then
 
   echoInfo "Configuring Tor as a middle relay..."
 
+  if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
+    sudo apt-get -y install tor && echoSuccess "-> OK" || handleError
+  elif [ "$os" == "arch" ]; then
+    sudo pacman -S --noconfirm tor && echoSuccess "-> OK" || handleError
+  elif [ "$os" == "centos" ]; then
+    sudo yum -y install tor && echoSuccess "-> OK" || handleError
+  fi
+
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
 Nickname $relayName
 ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
+ExitRelay 0
+SocksPort 0 
 ExitPolicy reject *:*
 AccountingMax $trafficLimit
 AccountingStart month 1 00:00
@@ -206,8 +200,31 @@ elif [ "$nodeType" = "bridge" ]
 then
   echoInfo "Configuring Tor as a bridge..."
 
+if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
+  sudo apt install -t obfs4proxy -y && echoSuccess "-> OK" || handleError
+  if [ "$os" == "debian" ]; then
+    sudo apt install -t bullseye-backports -y && echoSuccess "-> OK" || handleError
+    sudo setcap cap_net_bind_service=+ep /usr/bin/obfs4proxy
+  fi
+elif [ "$os" == "arch" ]; then
+  sudo pacman -S --noconfirm git && echoSuccess "-> OK" || handleError
+  git clone https://aur.archlinux.org/obfs4proxy.git && echoSuccess "-> OK" || handleError
+  cd obfs4proxy && makepkg -irs && echoSuccess "-> OK" || handleError  
+
+  
+if [ "$os" == "centos" ]; then
+  sudo yum install -y git golang policycoreutils-python-utils && echoSuccess "-> OK" || handleError
+  export GOPATH=$(mktemp -d)
+  go get gitlab.com/yawning/obfs4.git/obfs4proxy && echoSuccess "-> OK" || handleError
+  sudo cp $GOPATH/bin/obfs4proxy /usr/local/bin/ && echoSuccess "-> OK" || handleError
+  sudo chcon --reference=/usr/bin/tor /usr/local/bin/obfs4proxy && echoSuccess "-> OK" || handleError
+fi
+
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
 BridgeRelay 1
+ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy
+ServerTransportListenAddr obfs4 0.0.0.0:$obsf4Port
+ExtORPort auto
 Nickname $relayName
 ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
@@ -228,57 +245,30 @@ then
   sudo wget -q -O /etc/tor/tor-exit-notice.html "https://tor-relay.dev/scripts/tor-exit-notice.html" && echoSuccess "-> OK" || handleError
 fi
 
-function disableIPV6() {
-  sudo sed -i -e '/INSERT_IPV6_ADDRESS/d' /etc/tor/torrc
-  sudo sed -i -e 's/IPv6Exit 1/IPv6Exit 0/' /etc/tor/torrc
-  sudo sed -i -e '/\[..\]/d' /etc/tor/torrc
-  echoError "IPv6 support has been disabled!"
-  echo "If you want to enable it manually find out your IPv6 address and add this line to your /etc/tor/torrc"
-  echo "ORPort [YOUR_IPV6_ADDRESS]:YOUR_ORPORT (example: \"ORPort [2001:123:4567:89ab::1]:9001\")"
-  echo "or for a bridge: ServerListenAddr obfs4 [..]:YOUR_OBFS4PORT"
-  echo "Then run \"sudo systemctl restart tor\""
-}
-
-if $CHECK_IPV6
-then
-  echoInfo "Testing IPV6..."
-  IPV6_GOOD=false
-  sudo ping6 -c2 2001:858:2:2:aabb:0:563b:1526 && sudo ping6 -c2 2620:13:4000:6000::1000:118 && sudo ping6 -c2 2001:67c:289c::9 && sudo ping6 -c2 2001:678:558:1000::244 && sudo ping6 -c2 2607:8500:154::3 && sudo ping6 -c2 2001:638:a000:4140::ffff:189 && IPV6_GOOD=true
-  if [ ! IPV6_GOOD ]
-  then
-    sudo systemctl stop tor
-    echoError "Could not reach Tor directory servers via IPV6"
-    disableIPV6
-  else
-    echoSuccess "Seems like your IPV6 connection is working"
-
-    IPV6_ADDRESS=$(ip -6 addr | grep inet6 | grep "scope global" | awk '{print $2}' | cut -d'/' -f1)
-    if [ -z "$IPV6_ADDRESS" ]
-    then
-      echoError "Could not automatically find your IPv6 address"
-      echo "If you know your global (!) IPv6 address you can enter it now"
-      echo "Please make sure that you enter it correctly and do not enter any other characters"
-      echo "If you want to skip manual IPv6 setup leave the line blank and just press ENTER"
-      read -p "IPv6 address: " IPV6_ADDRESS
-
-      if [ -z "$IPV6_ADDRESS" ]
-      then
-        disableIPV6
-      else
-        sudo sed -i "s/INSERT_IPV6_ADDRESS/$IPV6_ADDRESS/" /etc/tor/torrc
-        echoSuccess "IPv6 Support enabled ($IPV6_ADDRESS)"
-      fi
-    else
-      sudo sed -i "s/INSERT_IPV6_ADDRESS/$IPV6_ADDRESS/" /etc/tor/torrc
-      echoSuccess "IPv6 Support enabled ($IPV6_ADDRESS)"
-    fi
-  fi
-fi
-
 sleep 10
 
-echoInfo "Reloading Tor config..."
-sudo systemctl reload tor && echoSuccess "-> OK" || handleError
+echoInfo "Enabling and starting Tor..."
+sudo systemctl enable --now tor.service && echoSuccess "-> OK" || handleError
+sudo systemctl restart tor.service && echoSuccess "-> OK" || handleError
+sudo systemctl restart tor@default && echoSuccess "-> OK" || handleError
+
+if [ "$os" == "centos" ]; then
+  sudo semanage port -a -t tor_port_t -p tcp $orPort && echoSuccess "-> OK" || handleError
+  sudo semanage port -a -t tor_port_t -p tcp $obsf4Port && echoSuccess "-> OK" || handleError
+fi
+
+
+if [ "$enableNyxMonitoring" = "true" ]
+then
+  echoInfo "Installing Nyx..."
+
+  if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
+    sudo apt-get install nyx
+  elif [ "$os" == "arch" ]; then
+    sudo pacman -S --noconfirm nyx
+  elif [ "$os" == "centos" ]; then
+    sudo yum -y install nyx
+  fi
 
 echo ""
 echoSuccess "=> Setup finished"
@@ -286,6 +276,8 @@ echo ""
 echo "Be sure to setup automatic security updates for your system."
 echo "Also be sure that your Firewall is forwarding the ORPORT: $orPort and DIRPORT: $dirPort (Dirport is not needed for bridges and middle relays)"
 echo "Tor will now check if your ports are reachable. This may take up to 20 minutes."
-echo "Check /var/log/tor/notices.log for an entry like:"
+echo "Check /var/log/syslog or run # journalctl -e -u tor@default and see if this message appears:"
 echo "\"Self-testing indicates your ORPort is reachable from the outside. Excellent.\""
+echo "If not, please check your firewall settings and your router settings."
+echo "IPv6 will get detected automatically and added. If you want to disable IPv6, please edit the torrc file."
 echo ""

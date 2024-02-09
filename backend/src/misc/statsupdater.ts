@@ -26,8 +26,8 @@ export default async function statsupdate() {
             throw new Error("Invalid response");
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = new Date().toJSON().slice(0, 10);
+
         const stats = await Stats.findOne({ date: today });
 
         const bps = response.body.relays.reduce((total, relay) => total + (relay.advertised_bandwidth ?? 0), 0) +

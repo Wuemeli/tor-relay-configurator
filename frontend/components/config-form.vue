@@ -41,9 +41,6 @@
                 <input id="enable-nyx-monitoring" type="checkbox" name="enable-nyx-monitoring"
                     class="ml-4 mr-2 leading-tight" v-model="enableNyxMonitoring">
                 <label for="enable-nyx-monitoring" class="text-text">Enable Nyx monitoring</label>
-                <input id="enableIPv6" type="checkbox" name="enableIPv6" class="ml-4 mr-2 leading-tight"
-                    v-model="enableIPv6">
-                <label for="enableIPv6" class="text-text">Enable IPv6 support</label>
             </div>
             <div class="mb-4 flex">
                 <div class="flex-1 mr-2">
@@ -58,10 +55,16 @@
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="9030">
                 </div>
+                <div class="flex-1">
+                    <label for="obsf4Port" class="block text-text text-sm font-bold mb-2">OBFS4 Port (Bridge Only)</label>
+                    <input id="obsf4Port" type="number" min="1" max="65535" v-model="obsf4Port"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="9000" required>
+                </div>
             </div>
             <div class="mb-4">
                 <label for="trafficLimit" class="block text-text text-sm font-bold mb-2">Total (Up + Down) monthly traffic
-                    limit (empty for no limit)</label>
+                    limit. Type nolimit for No Limit</label>
                 <input id="trafficLimit" type="text" v-model="trafficLimit" @input="validateTrafficLimit($event)"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="e.g.  10TB">
@@ -70,18 +73,22 @@
             </div>
             <div class="mb-4 flex">
                 <div class="flex-1 mr-2">
-                    <label for="maxBandwidth" class="block text-text text-sm font-bold mb-2">Maximum bandwidth (empty for no
-                        limit)</label>
-                    <input id="maxBandwidth" type="text" v-model="maxBandwidth"
+                    <label for="maxBandwidth" class="block text-text text-sm font-bold mb-2">Maximum bandwidth.
+                        Type nolimit for No Limit</label>
+                    <input id="maxBandwidth" type="text" v-model="maxBandwidth" @input="validateBandwidth($event)"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="Value in Mb/s">
+                    <span v-if="!isMaxBandwidthValid" class="text-red-500 text-xs">Invalid bandwidth format. Must be a
+                        number.</span>
                 </div>
                 <div class="flex-1">
                     <label for="maxBurstBandwidth" class="block text-text text-sm font-bold mb-2">Maximum burst
-                        bandwidth (empty for no limit)</label>
-                    <input id="maxBurstBandwidth" type="text" v-model="maxBurstBandwidth"
+                        bandwidth. Type nolimit for No Limit</label>
+                    <input id="maxBurstBandwidth" type="text" v-model="maxBurstBandwidth" @input="validateBandwidth($event)"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="Value in Mb/s">
+                    <span v-if="!isMaxBurstBandwidthValid" class="text-red-500 text-xs">Invalid burst bandwidth format. Must
+                        be a number.</span>
                 </div>
             </div>
         </form>
@@ -111,14 +118,16 @@ export default {
             nodeType: '',
             relayName: '',
             contactInfo: '',
-            enableIPv6: false,
             orPort: '',
             dirPort: '',
-            trafficLimit: '',
-            maxBandwidth: '',
-            maxBurstBandwidth: '',
-            enableNyxMonitoring: false,
-            isTrafficLimitValid: false
+            obsf4Port: '',
+            trafficLimit: 'nolimit',
+            maxBandwidth: 'nolimit',
+            maxBurstBandwidth: 'nolimit',
+            enableNyxMonitoring: true,
+            isTrafficLimitValid: true,
+            isMaxBandwidthValid: true,
+            isMaxBurstBandwidthValid: true
         };
     },
     methods: {
@@ -126,11 +135,24 @@ export default {
             const value = event.target.value;
             const regex = /^\s*(\d+(\.\d+)?\s*(TB|GB|MB))\s*$/i;
             this.isTrafficLimitValid = regex.test(value);
+        },
+        validateBandwidth(event) {
+            const value = event.target.value;
+            const regex = /^\s*\d+\s*$/;
+            let isValid = regex.test(value) || value === 'nolimit';
+            if (event.target.id === 'maxBandwidth') {
+                this.isMaxBandwidthValid = isValid;
+            } else if (event.target.id === 'maxBurstBandwidth') {
+                this.isMaxBurstBandwidthValid = isValid;
+            }
         }
     },
     computed: {
         configText() {
-            const command = `curl -sSL https://tor-relay.dev/scripts/install.sh | bash -s -- --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --enable-ipv6 ${this.enableIPv6} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
+            let command = `curl -sSL https://tor-relay.dev/scripts/install.sh | bash -s -- --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
+            if (this.nodeType === 'bridge') {
+                command += ` --obsf4-port ${this.obsf4Port}`;
+            }
             return `${command}`;
         }
     }

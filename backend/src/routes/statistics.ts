@@ -1,12 +1,10 @@
 import express from 'express';
 import Stats from '../schemas/statsSchema';
 
-
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = new Date().toJSON().slice(0, 10);
 
     const data = await Stats.findOne({ date: today });
 
@@ -20,7 +18,6 @@ router.get('/', async (req, res) => {
 router.get('/graph', async (req, res) => {
     const last7Days = new Date();
     last7Days.setDate(last7Days.getDate() - 7);
-    last7Days.setHours(0, 0, 0, 0);
 
     const data = await Stats.find({ date: { $gte: last7Days } }).sort({ date: 1 });
 
@@ -42,8 +39,7 @@ router.get('/graph', async (req, res) => {
 });
 
 router.get('/top10', async (req, res) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = new Date().toJSON().slice(0, 10);
 
     const data = await Stats.findOne({ date: today });
 
