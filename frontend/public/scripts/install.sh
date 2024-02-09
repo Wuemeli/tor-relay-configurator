@@ -162,7 +162,6 @@ echoInfo "Setting Tor config..."
 
 if [ "$nodeType" = "relay" ]
 then
-
   echoInfo "Configuring Tor as a middle relay..."
 
   if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
@@ -186,8 +185,9 @@ AccountingStart month 1 00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
+fi
 
-elif [ "$nodeType" = "exit" ]
+if [ "$nodeType" = "exit" ]
 then
   echoInfo "Configuring Tor as an exit relay..."
 
@@ -202,8 +202,9 @@ AccountingStart month 1 00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
+fi
 
-elif [ "$nodeType" = "bridge" ]
+if [ "$nodeType" = "bridge" ]
 then
   echoInfo "Configuring Tor as a bridge..."
 
@@ -242,8 +243,8 @@ AccountingStart month 1 00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
-
 fi
+
 if [ "$nodeType" = "exit" ]
 then
   echoInfo "Downloading Exit Notice to /etc/tor/tor-exit-notice.html..."

@@ -71,7 +71,7 @@ const options2 = ref({
         },
     },
     xaxis: {
-        type: 'datetime',
+        type: 'date',
         labels: {
             show: true,
             rotate: -45,
