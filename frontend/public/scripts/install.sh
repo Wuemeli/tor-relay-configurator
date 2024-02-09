@@ -209,30 +209,28 @@ if [ "$nodeType" = "bridge" ]
 then
   echoInfo "Configuring Tor as a bridge..."
 
-if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-  sudo apt install -t obfs4proxy -y && echoSuccess "-> OK" || handleError
-  if [ "$os" == "debian" ]; then
-    sudo apt install -t bullseye-backports -y && echoSuccess "-> OK" || handleError
-    sudo setcap cap_net_bind_service=+ep /usr/bin/obfs4proxy
+  if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
+    sudo apt install -t obfs4proxy -y && echoSuccess "-> OK" || handleError
+    if [ "$os" == "debian" ]; then
+      sudo apt install -t bullseye-backports -y && echoSuccess "-> OK" || handleError
+      sudo setcap cap_net_bind_service=+ep /usr/bin/obfs4proxy
+    fi
+  elif [ "$os" == "arch" ]; then
+    sudo pacman -S --noconfirm git && echoSuccess "-> OK" || handleError
+    git clone https://aur.archlinux.org/obfs4proxy.git && echoSuccess "-> OK" || handleError
+    cd obfs4proxy && makepkg -irs && echoSuccess "-> OK" || handleError   
+  elif [ "$os" == "centos" ]; then
+    sudo yum install -y git golang policycoreutils-python-utils && echoSuccess "-> OK" || handleError
+    export GOPATH=$(mktemp -d)
+    go get gitlab.com/yawning/obfs4.git/obfs4proxy && echoSuccess "-> OK" || handleError
+    sudo cp $GOPATH/bin/obfs4proxy /usr/local/bin/ && echoSuccess "-> OK" || handleError
+    sudo chcon --reference=/usr/bin/tor /usr/local/bin/obfs4proxy && echoSuccess "-> OK" || handleError
   fi
-elif [ "$os" == "arch" ]; then
-  sudo pacman -S --noconfirm git && echoSuccess "-> OK" || handleError
-  git clone https://aur.archlinux.org/obfs4proxy.git && echoSuccess "-> OK" || handleError
-  cd obfs4proxy && makepkg -irs && echoSuccess "-> OK" || handleError  
-
-  
-if [ "$os" == "centos" ]; then
-  sudo yum install -y git golang policycoreutils-python-utils && echoSuccess "-> OK" || handleError
-  export GOPATH=$(mktemp -d)
-  go get gitlab.com/yawning/obfs4.git/obfs4proxy && echoSuccess "-> OK" || handleError
-  sudo cp $GOPATH/bin/obfs4proxy /usr/local/bin/ && echoSuccess "-> OK" || handleError
-  sudo chcon --reference=/usr/bin/tor /usr/local/bin/obfs4proxy && echoSuccess "-> OK" || handleError
-fi
 
   cat << EOF | sudo tee -a /etc/tor/torrc > /dev/null
-BridgeRelay 1
+BridgeRelay  1
 ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy
-ServerTransportListenAddr obfs4 0.0.0.0:$obsf4Port
+ServerTransportListenAddr obfs4  0.0.0.0:$obsf4Port
 ExtORPort auto
 Nickname $relayName
 ContactInfo $contactInfo [tor-relay.dev]
@@ -240,7 +238,7 @@ ORPort $orPort
 DirPort $dirPort
 Exitpolicy reject *:*
 AccountingMax $trafficLimit
-AccountingStart month 1 00:00
+AccountingStart month  1  00:00
 RelayBandwidthRate $maxBandwidth
 RelayBandwidthBurst $maxBurstBandwidth
 EOF
