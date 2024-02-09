@@ -225,7 +225,7 @@ then
   echoInfo "Downloading Exit Notice to /etc/tor/tor-exit-notice.html..."
   echo -e "\e[1mPlease edit this file and replace YOUR_EMAIL_ADDRESS with your e-mail address!"
   echo -e "\e[1mAlso note that this is the US version. If you are not in the US please edit the file and remove the US-Only sections!\e[0m"
-  sudo wget -q -O /etc/tor/tor-exit-notice.html "https://tor-relay.dev/scripts/install.sh/tor-exit-notice.html" && echoSuccess "-> OK" || handleError
+  sudo wget -q -O /etc/tor/tor-exit-notice.html "https://tor-relay.dev/scripts/tor-exit-notice.html" && echoSuccess "-> OK" || handleError
 fi
 
 function disableIPV6() {

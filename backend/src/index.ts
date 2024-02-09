@@ -13,7 +13,12 @@ const PORT = process.env.PORT || 3000;
 connect();
 cron();
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://tor-relay.dev',
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions)); 
 app.use(express.json());
 
 app.use('/api/statistics', statistics);

@@ -34,8 +34,6 @@ router.get('/graph', async (req, res) => {
         bandwidth.push({ date: day.date.toISOString().split('T')[0], value: day.bandwidth });
     });
 
-
-
     res.status(200).json({
         servers,
         bridges,
