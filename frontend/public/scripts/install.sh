@@ -277,6 +277,7 @@ then
   elif [ "$os" == "centos" ]; then
     sudo yum -y install nyx
   fi
+fi
 
 echo ""
 echoSuccess "=> Setup finished"
