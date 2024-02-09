@@ -38,6 +38,7 @@ const options1 = ref({
     },
     xaxis: {
         type: 'datetime',
+        categories: [],
         labels: {
             show: true,
             rotate: -45,
@@ -79,6 +80,7 @@ const options2 = ref({
     },
     xaxis: {
         type: 'datetime',
+        categories: [],
         labels: {
             show: true,
             rotate: -45,
@@ -125,22 +127,14 @@ const series2 = ref([
 
 onMounted(async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/statistics/graph');
+        const response = await fetch('https://api.tor-relay.dev/api/statistics/graph');
         const data = await response.json();
-        series1.value[0].data = data.servers.map(item => [new Date(item.date), item.value]);
-        series1.value[1].data = data.bridges.map(item => [new Date(item.date), item.value]);
-        series2.value[0].data = data.bandwidth.map(item => [new Date(item.date), item.value]);
+        series1.value[0].data = data.servers.map(item => [new Date(item.date).getTime(), item.value]);
+        series1.value[1].data = data.bridges.map(item => [new Date(item.date).getTime(), item.value]);
+        series2.value[0].data = data.bandwidth.map(item => [new Date(item.date).getTime(), item.value]);
 
-        // Calculate min and max dates
-        const allDates = [...data.servers, ...data.bridges, ...data.bandwidth].map(item => new Date(item.date));
-        const minDate = Math.min(...allDates);
-        const maxDate = Math.max(...allDates);
-
-        // Update chart options with min and max dates
-        options1.value.xaxis.min = minDate;
-        options1.value.xaxis.max = maxDate;
-        options2.value.xaxis.min = minDate;
-        options2.value.xaxis.max = maxDate;
+        options1.value.xaxis.categories = data.servers.map(item => new Date(item.date).toISOString());
+        options2.value.xaxis.categories = data.servers.map(item => new Date(item.date).toISOString());
     } catch (error) {
         console.error(error);
     }

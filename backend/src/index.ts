@@ -15,12 +15,12 @@ connect();
 cron();
 
 const corsOptions = {
-    origin: 'https://tor-relay.dev, http://localhost:3000',
+    origin: 'https://tor-relay.dev',
     optionsSuccessStatus: 200
 };
 
-app.use(cors(corsOptions)); 
 app.use(helmet());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/statistics', statistics);

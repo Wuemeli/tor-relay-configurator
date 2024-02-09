@@ -8,7 +8,6 @@
 - [Nuxt.js](https://nuxtjs.org) - The Frontend Framework used
 - [MongoDB](https://mongodb.com) - The Database used
 - [Express.js](https://expressjs.com) - The Backend Framework used
-- [ApexCharts](https://apexcharts.com) - The Chart Library used
 
 ## 🪶 Features
 - Create a TOR-Relay with a few clicks
