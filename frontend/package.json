@@ -13,6 +13,7 @@
     "@nuxtjs/robots": "^3.0.0",
     "apexcharts": "^3.45.2",
     "nuxt": "^3.10.1",
+    "nuxt-simple-sitemap": "^4.4.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vue3-apexcharts": "^1.4.4"
