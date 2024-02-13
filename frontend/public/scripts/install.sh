@@ -130,10 +130,10 @@ fi
 
 echoInfo "Installing necessary packages..."
 
-RELEASE=$(lsb-release -sc)
+RELEASE=$(lsb_release -cs)
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-sudo apt-get -y install lsb-release curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
+sudo apt-get -y install curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
 if [ "$os" == "debian" ]; then
 echoInfo "Adding Torproject apt repository..."
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
@@ -149,9 +149,9 @@ echoInfo "Adding Torproject apt repository..."
   sudo apt-get -y update && echoSuccess "-> OK" || handleError
   sudo apt-get install tor psmisc dirmngr -y && echoSuccess "-> OK" || handleError
 elif [ "$os" == "arch" ]; then
-  sudo pacman -S --noconfirm tor lsb-release curl && echoSuccess "-> OK" || handleError
+  sudo pacman -S --noconfirm tor curl && echoSuccess "-> OK" || handleError
 elif [ "$os" == "centos" ]; then
-  sudo yum -y install lsb-release curl epel-release && echoSuccess "-> OK" || handleError
+  sudo yum -y install curl epel-release && echoSuccess "-> OK" || handleError
   sudo touch /etc/yum.repos.d/Tor.repo && echoSuccess "-> OK" || handleError
   echo "[tor]
 name=Tor for Enterprise Linux $releasever - $basearch
