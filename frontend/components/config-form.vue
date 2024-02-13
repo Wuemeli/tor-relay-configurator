@@ -10,9 +10,9 @@
                     class="shadow appearance-none border rounded w-full py-2 px-3   text-text leading-tight focus:outline-none focus:shadow-outline"
                     required>
                     <option value="">Select Tor Node Type</option>
-                    <option value="relay">Relay (Default)</option>
+                    <option value="relay">Relay</option>
                     <option value="bridge">Bridge</option>
-                    <option value="exit">Exit Node (Following ReducedExitPolicy)</option>
+                    <option value="exit">Exit Node</option>
                 </select>
                 <label for="os" class="block text-text text-sm font-bold mb-2 mt-4">Operating System*</label>
                 <select id="os" name="os" v-model="os"
@@ -41,6 +41,9 @@
                 <input id="enable-nyx-monitoring" type="checkbox" name="enable-nyx-monitoring"
                     class="ml-4 mr-2 leading-tight" v-model="enableNyxMonitoring">
                 <label for="enable-nyx-monitoring" class="text-text">Enable Nyx monitoring</label>
+                <input id="blockbadips" type="checkbox" name="blockbadips"
+                    class="ml-4 mr-2 leading-tight" v-if="nodeType === 'exit'" v-model="blockbadips">
+                <label for="blockbadips" class="text-text" v-if="nodeType === 'exit'">Block Bad IPs</label>
             </div>
             <div class="mb-4 flex">
                 <div class="flex-1 mr-2">
@@ -49,13 +52,13 @@
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="9001" required>
                 </div>
-                <div class="flex-1">
-                    <label for="dirPort" class="block text-text text-sm font-bold mb-2">DirPort</label>
+                <div class="flex-1 mb-4" v-if="nodeType === 'exit'">
+                    <label for="dirPort" class="block text-text text-sm font-bold mb-2">DirPort (Exit Only)</label>
                     <input id="dirPort" type="number" min="1" max="65535" v-model="dirPort"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="9030">
                 </div>
-                <div class="flex-1">
+                <div class="flex-1 mb-4" v-if="nodeType === 'bridge'">
                     <label for="obsf4Port" class="block text-text text-sm font-bold mb-2">OBFS4 Port (Bridge Only)</label>
                     <input id="obsf4Port" type="number" min="1" max="65535" v-model="obsf4Port"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
@@ -127,7 +130,8 @@ export default {
             enableNyxMonitoring: true,
             isTrafficLimitValid: true,
             isMaxBandwidthValid: true,
-            isMaxBurstBandwidthValid: true
+            isMaxBurstBandwidthValid: true,
+            blockbadips: true
         };
     },
     methods: {
@@ -152,6 +156,10 @@ export default {
             let command = `curl -sSL https://tor-relay.dev/scripts/install.sh | bash -s --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
             if (this.nodeType === 'bridge') {
                 command += ` --obsf4-port ${this.obsf4Port}`;
+            }
+            if (this.nodeType === 'exit') {
+                command += ` --block-bad-ips ${this.blockbadips}`;
+                command += ` --dir-port ${this.dirPort}`;
             }
             return `${command}`;
         }

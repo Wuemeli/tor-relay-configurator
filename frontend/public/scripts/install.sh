@@ -56,6 +56,10 @@ while [[ $# -gt 0 ]]; do
             enableNyxMonitoring="$2"
             shift 2
             ;;
+        --block-bad-ips)
+            blockBadIps="$2"
+            shift 2
+            ;;
         *)
             shift
             ;;
@@ -73,6 +77,7 @@ echo "Traffic Limit: $trafficLimit"
 echo "Max Bandwidth: $maxBandwidth"
 echo "Max Burst Bandwidth: $maxBurstBandwidth"
 echo "Enable Nyx Monitoring: $enableNyxMonitoring"
+echo "Block Bad IPs: $blockBadIps"
 
 C_RED="\e[31m"
 C_GREEN="\e[32m"
@@ -180,10 +185,10 @@ DirPort $dirPort
 ExitRelay   0
 SocksPort   0   
 ExitPolicy reject *:*
-AccountingMax $trafficLimit
-AccountingStart month   1   00:00
-RelayBandwidthRate $maxBandwidth
-RelayBandwidthBurst $maxBurstBandwidth
+$(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingMax $trafficLimit"; fi)
+$(if [ "$maxBandwidth" != "nolimit" ]; then echo "RelayBandwidthRate $maxBandwidth"; fi)
+$(if [ "$maxBurstBandwidth" != "nolimit" ]; then echo "RelayBandwidthBurst $maxBurstBandwidth"; fi)
+$(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingStart month  1  00:00"; fi)
 EOF
 
 fi
@@ -198,10 +203,11 @@ ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
 ExitPolicy accept *:*
-AccountingMax $trafficLimit
-AccountingStart month 1 00:00
-RelayBandwidthRate $maxBandwidth
-RelayBandwidthBurst $maxBurstBandwidth
+$(if [ "$blockBadIps" = "true" ]; then curl -s https://tornull.org/tornull-bl.txt | sudo tee -a /etc/tor/torrc > /dev/null; fi)
+$(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingMax $trafficLimit"; fi)
+$(if [ "$maxBandwidth" != "nolimit" ]; then echo "RelayBandwidthRate $maxBandwidth"; fi)
+$(if [ "$maxBurstBandwidth" != "nolimit" ]; then echo "RelayBandwidthBurst $maxBurstBandwidth"; fi)
+$(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingStart month  1  00:00"; fi)
 EOF
 fi
 
@@ -237,10 +243,10 @@ ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
 Exitpolicy reject *:*
-AccountingMax $trafficLimit
-AccountingStart month  1  00:00
-RelayBandwidthRate $maxBandwidth
-RelayBandwidthBurst $maxBurstBandwidth
+$(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingMax $trafficLimit"; fi)
+$(if [ "$maxBandwidth" != "nolimit" ]; then echo "RelayBandwidthRate $maxBandwidth"; fi)
+$(if [ "$maxBurstBandwidth" != "nolimit" ]; then echo "RelayBandwidthBurst $maxBurstBandwidth"; fi)
+$(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingStart month  1  00:00"; fi)
 EOF
 fi
 

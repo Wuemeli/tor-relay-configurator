@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run middle install script
-      run: bash ./frontend/public/scripts/install.sh -s -- --os ubuntu --node-type relay --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
+      run: bash ./frontend/public/scripts/install.sh -s --os ubuntu --node-type relay --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port  --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true
 
   test-exit-script:
     runs-on: ubuntu-latest
@@ -25,7 +25,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run exit install script
-      run: bash ./frontend/public/scripts/install.sh -s -- --os ubuntu --node-type exit --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
+      run: bash ./frontend/public/scripts/install.sh -s --os ubuntu --node-type exit --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --block-bad-ips true --dir-port 9030
 
 
   test-bridge-script:
@@ -36,4 +36,4 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Run bridge install script
-      run: bash ./frontend/public/scripts/install.sh -s -- --os ubuntu --node-type bridge --relay-name testrelay --contact-info test@example.com --enable-ipv6 true --or-port 9001 --dir-port 9030 --traffic-limit '1 GB' --max-bandwidth '1 GB' --max-burst-bandwidth '1 GB' --enable-nyx-monitoring true
+      run: bash ./frontend/public/scripts/install.sh -s --os ubuntu --node-type bridge --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --obsf4-port 9000
