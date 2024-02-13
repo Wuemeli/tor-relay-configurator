@@ -116,7 +116,7 @@ EOF
 
 echo -e $C_DEFAULT
 echo "              [Relay Setup]"
-echo "This script will ask for your sudo password."
+echo "This script maybe will ask for your sudo password."
 echo "----------------------------------------------------------------------"
 
 
@@ -140,9 +140,9 @@ echoInfo "Adding Torproject apt repository..."
   echo "deb     [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
   echo "deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee2 OK" || handleError
   echoInfo "Adding Torproject GPG key..."
-  wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | sudo gpg --dearmor | sudo tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
-  sudo apt-get -y update && echoSuccess "-> OK" || handleError
-  sudo apt-get install deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
+  wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
+  sudo apt -y update && echoSuccess "-> OK" || handleError
+  sudo apt install tor deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
   sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
   fi 
   
