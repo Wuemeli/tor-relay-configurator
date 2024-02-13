@@ -27,7 +27,7 @@
             </div>
             <div class="mb-4">
                 <label for="relayName" class="block text-text text-sm font-bold mb-2">Relay Name*</label>
-                <input id="relayName" type="text" pattern="^[a-zA-Z0-9]{1,19}$" v-model="relayName"
+                <input id="relayName" type="text" pattern="^[a-zA-Z0-9]{1,19}$" v-model="relayName" @input="validateRelayName($event)"
                     class="shadow appearance-none border rounded w-full py-2 px-3   text-text leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Enter Relay Nickname" required>
             </div>
@@ -135,6 +135,11 @@ export default {
         };
     },
     methods: {
+        validateRelayName(event) {
+            const value = event.target.value;
+            const regex = /^[a-zA-Z0-9]{1,19}$/;
+            this.isRelayNameValid = regex.test(value);
+        },
         validateTrafficLimit(event) {
             const value = event.target.value;
             const regex = /^\s*(\d+(\.\d+)?\s*(TB|GB|MB))\s*$/i;

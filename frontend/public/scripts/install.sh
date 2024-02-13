@@ -274,9 +274,9 @@ then
   echoInfo "Installing Nyx..."
 
   if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-    sudo apt-get install nyx
+    sudo apt-get install nyx -y
   elif [ "$os" == "arch" ]; then
-    sudo pacman -S --noconfirm nyx
+    sudo pacman -S --noconfirm nyx 
   elif [ "$os" == "centos" ]; then
     sudo yum -y install nyx
   fi
