@@ -30,6 +30,7 @@
                 <input id="relayName" type="text" pattern="^[a-zA-Z0-9]{1,19}$" v-model="relayName" @input="validateRelayName($event)"
                     class="shadow appearance-none border rounded w-full py-2 px-3   text-text leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Enter Relay Nickname" required>
+                <span v-if="!isRelayNameValid" class="text-red-500 text-xs">Invalid relay name. Must be 1-19 characters long and contain only letters and numbers.</span>
             </div>
             <div class="mb-4">
                 <label for="contactInfo" class="block text-text text-sm font-bold mb-2">Contact Info*</label>
