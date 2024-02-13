@@ -142,8 +142,6 @@ echoInfo "Adding Torproject apt repository..."
   echoInfo "Adding Torproject GPG key..."
   wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
   sudo apt -y update && echoSuccess "-> OK" || handleError
-  sudo apt install tor deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
-  sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
   fi 
   
   sudo apt-get -y update && echoSuccess "-> OK" || handleError
