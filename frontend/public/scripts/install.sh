@@ -130,7 +130,7 @@ fi
 
 echoInfo "Installing necessary packages..."
 
-RELEASE=$(lsb_release -sc)
+RELEASE=$(lsb-release -sc)
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
 sudo apt-get -y install lsb-release curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
@@ -141,7 +141,7 @@ echoInfo "Adding Torproject apt repository..."
   echo "deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee2 OK" || handleError
   echoInfo "Adding Torproject GPG key..."
   wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | sudo gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
-  udo apt-get -y update && echoSuccess "-> OK" || handleError
+  sudo apt-get -y update && echoSuccess "-> OK" || handleError
   sudo apt-get install deb.torproject.org-keyring -y && echoSuccess "-> OK" || handleError
   sudo chown -R debian-tor:debian-tor /var/log/tor && echoSuccess "-> OK" || handleError
   fi 
