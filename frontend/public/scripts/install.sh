@@ -130,7 +130,7 @@ fi
 
 echoInfo "Installing necessary packages..."
 
-RELEASE=$(lsb_release -cs)
+RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d'=' -f2)
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
 sudo apt-get -y install curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
