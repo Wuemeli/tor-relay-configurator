@@ -10,6 +10,9 @@ export default defineNuxtConfig({
       htmlAttrs: {
         lang: 'en'
       },
+      script: [
+        { defer: true, dataDomain: "tor-relay.dev", src: "https://googleisbad.wuemeli.com/js/script.js" }
+      ],
       meta: [
         { hid: 'description', name: 'description', content: 'Tor Relay Configurator is a web application that helps you to configure your Tor relay. It even has a Leaderboard to compare your relay with others.' },
         { name: 'keywords', content: 'tor, relay, configurator, leaderboard, tor relay, tor configurator, tor leaderboard, tor relay configurator, tor relay leaderboard' },
