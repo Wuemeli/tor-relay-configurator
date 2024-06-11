@@ -53,21 +53,21 @@
                     <input id="orPort" type="number" min="1" max="65535" v-model="orPort" @input="validatePort($event)"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="9001" required>
-                    <span v-if="!isOrPortValid" class="text-red-500 text-xs">Invalid port number. Must be a number between 1 and 65535.</span>
+                    <span v-if="!isOrPortValid" class="text-red-500 text-xs">Invalid port number. Must be a number between 3000 and 65535.</span>
                 </div>
                 <div class="flex-1 mb-4" v-if="nodeType === 'exit'">
                     <label for="dirPort" class="block text-text text-sm font-bold mb-2">DirPort (Exit Only)</label>
                     <input id="dirPort" type="number" min="1" max="65535" v-model="dirPort" @input="validatePort($event)"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="9030">
-                    <span v-if="!isDirPortValid" class="text-red-500 text-xs">Invalid port number. Must be a number between 1 and 65535.</span>
+                    <span v-if="!isDirPortValid" class="text-red-500 text-xs">Invalid port number. Must be a number between 3000 and 65535.</span>
                 </div>
                 <div class="flex-1 mb-4" v-if="nodeType === 'bridge'">
                     <label for="obsf4Port" class="block text-text text-sm font-bold mb-2">OBFS4 Port (Bridge Only)</label>
                     <input id="obsf4Port" type="number" min="1" max="65535" v-model="obsf4Port" @input="validatePort($event)"
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="9000" required>
-                    <span v-if="!isObfs4PortValid" class="text-red-500 text-xs">Invalid port number. Must be a number between 1 and 65535.</span>
+                    <span v-if="!isObfs4PortValid" class="text-red-500 text-xs">Invalid port number. Must be a number between 3000 and 65535.</span>
                 </div>
             </div>
             <div class="mb-4">
@@ -136,14 +136,19 @@ export default {
             isTrafficLimitValid: true,
             isMaxBandwidthValid: true,
             isMaxBurstBandwidthValid: true,
-            blockbadips: true
+            blockbadips: true,
+            isRelayNameValid: false,
+            isEmailValid: false,
+            isOrPortValid: false,
+            isDirPortValid: false,
+            isObfs4PortValid: false
         };
     },
     methods: {
         validatePort(event) {
             const value = event.target.value;
             const regex = /^\d+$/;
-            const isValid = regex.test(value) && value >= 1 && value <= 65535;
+            const isValid = regex.test(value) && value >= 3000 && value <= 65535;
             if (event.target.id === 'orPort') {
                 this.isOrPortValid = isValid;
             } else if (event.target.id === 'dirPort') {
