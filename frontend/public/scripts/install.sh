@@ -296,6 +296,7 @@ echo "Also be sure that your Firewall is forwarding the ORPORT: $orPort and DIRP
 echo "Tor will now check if your ports are reachable. This may take up to 20 minutes."
 echo "Check /var/log/syslog or run # journalctl -e -u tor@default and see if this message appears:"
 echo "\"Self-testing indicates your ORPort is reachable from the outside. Excellent.\""
-echo "If not, please check your firewall settings and your router settings."
+echo "If not, please check your firewall/router settings."
 echo "IPv6 will get detected automatically and added. If you want to disable IPv6, please edit the torrc file."
+echo "Thanks for using this script. Be sure to star it on GitHub!"
 echo ""
