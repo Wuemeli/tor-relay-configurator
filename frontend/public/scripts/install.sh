@@ -119,6 +119,11 @@ echo "              [Relay Setup]"
 echo "This script maybe will ask for your sudo password."
 echo "----------------------------------------------------------------------"
 
+if ! [ -x "$(command -v sudo)" ]; then
+  echoError "Error: sudo is not installed."
+  echoError "Please install sudo and run this script again."
+  exit 1
+fi
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
   sudo apt-get update && echoSuccess "-> OK" || handleError
@@ -133,10 +138,9 @@ echoInfo "Installing necessary packages..."
 RELEASE=$(cat /etc/os-release | grep VERSION_CODENAME | cut -d'=' -f2)
 
 if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
-sudo apt-get -y install curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
+sudo apt-get -y install curl apt-transport-https wget gpg && echoSuccess "-> OK" || handleError
 if [ "$os" == "debian" ]; then
 echoInfo "Adding Torproject apt repository..."
-  sudo apt install apt-transport-https -y && echoSuccess "-> OK" || handleError
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
   echo "deb     [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
   echo "deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee2 OK" || handleError
