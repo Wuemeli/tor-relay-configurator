@@ -180,7 +180,7 @@ export default {
     },
     computed: {
         configText() {  
-            let command = `bash <(curl -sSL https://tor-relay.dev/scripts/install.sh) --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --or-port ${this.orPort} --dir-port ${this.dirPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
+            let command = `bash <(curl -sSL https://tor-relay.dev/scripts/install.sh) --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --or-port ${this.orPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
             if (this.nodeType === 'bridge') {
                 command += ` --obsf4-port ${this.obsf4Port}`;
             }
