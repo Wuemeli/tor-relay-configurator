@@ -23,6 +23,7 @@ Don't remove any Credits from the Footer.
 - [ ] Migrate the Express Backend to an Nitro Backend
 - [ ] When migrated to Nitro try to make the leaderboards without an Database. Use redis for caching
 - [ ] Review Install Script. Add an Dry Run, test it, add newer tor install flags when available
+- [ ] Make the Config form more appealing. Add warning and info to each settings and what they do
 
 ## 📜 Contributing
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
