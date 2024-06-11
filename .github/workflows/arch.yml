@@ -9,8 +9,9 @@ on:
 jobs:
   test-middle-script:
     runs-on: ubuntu-18.04
+
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
     - name: Install Archlinux
       run: curl -L https://github.com/zaoqi/github-actions-archlinux/raw/master/install.sh | sh
@@ -22,7 +23,7 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Install Archlinux
       run: curl -L https://github.com/zaoqi/github-actions-archlinux/raw/master/install.sh | sh
 
@@ -32,9 +33,9 @@ jobs:
 
   test-bridge-script:
     runs-on: ubuntu-18.04
-    
+
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Install Archlinux
       run: curl -L https://github.com/zaoqi/github-actions-archlinux/raw/master/install.sh | sh
 
