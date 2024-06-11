@@ -19,6 +19,11 @@
 This Project is under the GNU GENERAL PUBLIC LICENSE. See the [LICENSE](LICENSE) file for more info.
 Don't remove any Credits from the Footer.
 
+## 🚀 Todo
+- [ ] Migrate the Express Backend to an Nitro Backend
+- [ ] When migrated to Nitro try to make the leaderboards without an Database. Use redis for caching
+- [ ] Review Install Script. Add an Dry Run, test it, add newer tor install flags when available
+
 ## 📜 Contributing
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
 To start look at the [Contributing.md](CONTRIBUTING.md) File.
