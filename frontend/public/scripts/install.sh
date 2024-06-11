@@ -136,12 +136,14 @@ if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
 sudo apt-get -y install curl apt-transport-https wget gpg sudo && echoSuccess "-> OK" || handleError
 if [ "$os" == "debian" ]; then
 echoInfo "Adding Torproject apt repository..."
+  sudo apt install apt-transport-https -y && echoSuccess "-> OK" || handleError
   sudo touch /etc/apt/sources.list.d/tor.list && echoSuccess "-> touch OK" || handleError
   echo "deb     [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee1 OK" || handleError
   echo "deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $RELEASE main" | sudo tee /etc/apt/sources.list.d/tor.list && echoSuccess "-> tee2 OK" || handleError
   echoInfo "Adding Torproject GPG key..."
   wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
   sudo apt -y update && echoSuccess "-> OK" || handleError
+  sudo apt -y install tor deb.torproject.org-keyring && echoSuccess "-> OK" || handleError
   fi 
   
   sudo apt-get -y update && echoSuccess "-> OK" || handleError
