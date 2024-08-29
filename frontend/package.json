@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxtjs/robots": "^3.0.0",
+    "@nuxtjs/robots": "^4.0.0",
     "apexcharts": "^3.45.2",
     "nuxt": "^3.10.1",
     "nuxt-simple-sitemap": "^4.4.1",
