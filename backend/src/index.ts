@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
+import ratelimit from 'express-rate-limit';
 dotenv.config();
 
 import connect from './misc/database'
@@ -19,6 +20,12 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 
+const limiter = ratelimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+});
+
+app.use(limiter);
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(express.json());
