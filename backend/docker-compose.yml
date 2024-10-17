@@ -1,0 +1,9 @@
+version: '3'
+services:
+  licenseserver:
+    restart: always
+    build: .
+    env_file:
+     - .env
+    ports:
+      - "${PORT}:${PORT}"
