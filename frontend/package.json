@@ -12,7 +12,7 @@
   "dependencies": {
     "@nuxtjs/robots": "^4.0.0",
     "apexcharts": "^4.0.0",
-    "nuxt": "^3.10.1",
+    "nuxt": "^4.0.0",
     "nuxt-simple-sitemap": "^4.4.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
