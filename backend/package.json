@@ -28,7 +28,7 @@
     "express-rate-limit": "^7.4.1",
     "helmet": "^8.0.0",
     "mongoose": "^8.1.1",
-    "node-cron": "^3.0.3",
+    "node-cron": "^4.0.0",
     "onionoo": "^2.0.2"
   }
 }
