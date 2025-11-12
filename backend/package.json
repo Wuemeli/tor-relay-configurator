@@ -8,7 +8,7 @@
     "nodestart": "node ./dist/index.js"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^24.0.0",
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {
