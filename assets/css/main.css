@@ -1,20 +1,14 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import "tailwindcss";
 
 body {
-    @apply bg-background;
-    @apply text-text;
+    @apply bg-gray-800 text-gray-100;
 }
 
 input,
 select,
 textarea {
-    @apply bg-background;
-    @apply text-text;
+    @apply bg-gray-700 text-gray-100;
 }
-
 
 ::-webkit-scrollbar {
     width: 10px;
@@ -29,38 +23,6 @@ textarea {
 
 ::-webkit-scrollbar-thumb:hover {
 }
-
-#configFile {
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-    @apply bg-background;
-    @apply text-text;
-}
-
-input,
-select,
-textarea {
-    @apply bg-background;
-    @apply text-text;
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {}
-
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {}
 
 #configFile {
     white-space: pre-wrap;

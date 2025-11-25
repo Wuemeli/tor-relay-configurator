@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   ssr: true,
   devtools: true,
@@ -19,13 +20,6 @@ export default defineNuxtConfig({
     },
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
-
+  vite: { plugins: [tailwindcss()] },
   css: ["~/assets/css/main.css"],
-
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
-    },
-  },
 });
