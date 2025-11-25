@@ -1,5 +1,3 @@
-[![wakatime](https://wakatime.com/badge/user/1b863d20-30af-46ca-add5-692804513d23/project/018d8815-54d3-47ee-8445-22af9f31f17b.svg)](https://wakatime.com/badge/user/1b863d20-30af-46ca-add5-692804513d23/project/018d8815-54d3-47ee-8445-22af9f31f17b)
-
 # TOR-Relay Configurator
 
 > A Tool to create your own TOR-Relay with a few clicks. <br>
