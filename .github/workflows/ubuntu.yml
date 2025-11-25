@@ -2,38 +2,37 @@ name: Ubuntu Test Script
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-middle-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run middle install script
-      run: bash ./frontend/public/scripts/install.sh -s --os ubuntu --node-type relay --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port  --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true
+      - name: Run middle install script
+        run: bash ./public/scripts/install.sh -s --os ubuntu --node-type relay --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port  --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true
 
   test-exit-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run exit install script
-      run: bash ./frontend/public/scripts/install.sh -s --os ubuntu --node-type exit --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --block-bad-ips true --dir-port 9030
-
+      - name: Run exit install script
+        run: bash ./public/scripts/install.sh -s --os ubuntu --node-type exit --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --block-bad-ips true --dir-port 9030
 
   test-bridge-script:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Run bridge install script
-      run: bash ./frontend/public/scripts/install.sh -s --os ubuntu --node-type bridge --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --obsf4-port 9000
+      - name: Run bridge install script
+        run: bash ./public/scripts/install.sh -s --os ubuntu --node-type bridge --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --obsf4-port 9000
