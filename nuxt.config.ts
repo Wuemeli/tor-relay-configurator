@@ -22,4 +22,13 @@ export default defineNuxtConfig({
   },
   vite: { plugins: [tailwindcss()] },
   css: ["~/assets/css/main.css"],
+
+  nitro: {
+    preset: "static",
+    prerender: {
+      failOnError: false,
+      crawlLinks: true,
+      routes: ["/"],
+    },
+  },
 });
