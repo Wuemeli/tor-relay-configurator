@@ -23,7 +23,7 @@
                 >
                     <option value="">Select Tor Node Type</option>
                     <option value="relay">Relay</option>
-                    <option value="bridge">Bridge</option>
+                    <option value="bridge">OBFS4 Bridge</option>
                     <option value="exit">Exit Node</option>
                 </select>
                 <label
@@ -110,6 +110,20 @@
                     v-if="nodeType === 'exit'"
                     >Block Bad IPs</label
                 >
+                <input
+                    id="iat-mode"
+                    type="checkbox"
+                    name="iat-mode"
+                    class="ml-4 mr-2 leading-tight"
+                    v-if="nodeType === 'bridge'"
+                    v-model="iatMode"
+                />
+                <label
+                    for="iat-mode"
+                    class="text-text"
+                    v-if="nodeType === 'bridge'"
+                    >Enable IAT Mode (iat-mode=1)</label
+                >
             </div>
             <div class="mb-4 flex">
                 <div class="flex-1 mr-2">
@@ -159,7 +173,7 @@
                     <label
                         for="obsf4Port"
                         class="block text-text text-sm font-bold mb-2"
-                        >OBFS4 Port (Bridge Only)</label
+                        >OBFS4 Port (OBFS4 Bridge Only)</label
                     >
                     <input
                         id="obsf4Port"
@@ -273,6 +287,7 @@ export default {
             maxBandwidth: "nolimit",
             maxBurstBandwidth: "nolimit",
             enableNyxMonitoring: true,
+            iatMode: false,
             isTrafficLimitValid: true,
             isMaxBandwidthValid: true,
             isMaxBurstBandwidthValid: true,
@@ -329,6 +344,9 @@ export default {
             let command = `bash <(curl -sSL https://tor-relay.dev/scripts/install.sh) --os ${this.os} --node-type ${this.nodeType} --relay-name ${this.relayName} --contact-info ${this.contactInfo} --or-port ${this.orPort} --traffic-limit ${this.trafficLimit} --max-bandwidth ${this.maxBandwidth} --max-burst-bandwidth ${this.maxBurstBandwidth} --enable-nyx-monitoring ${this.enableNyxMonitoring}`;
             if (this.nodeType === "bridge") {
                 command += ` --obsf4-port ${this.obsf4Port}`;
+                if (this.iatMode) {
+                    command += ` --iat-mode 1`;
+                }
             }
             if (this.nodeType === "exit") {
                 command += ` --block-bad-ips ${this.blockbadips}`;

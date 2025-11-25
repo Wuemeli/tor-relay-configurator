@@ -60,6 +60,10 @@ while [[ $# -gt 0 ]]; do
             blockBadIps="$2"
             shift 2
             ;;
+        --iat-mode)
+            iatMode="$2"
+            shift 2
+            ;;
         *)
             shift
             ;;
@@ -78,6 +82,7 @@ echo "Max Bandwidth: $maxBandwidth"
 echo "Max Burst Bandwidth: $maxBurstBandwidth"
 echo "Enable Nyx Monitoring: $enableNyxMonitoring"
 echo "Block Bad IPs: $blockBadIps"
+echo "IAT Mode: $iatMode"
 
 C_RED="\e[31m"
 C_GREEN="\e[32m"
@@ -107,7 +112,7 @@ echo -e $C_CYAN #cyan
 cat << "EOF"
 
  _____            ___     _
-|_   _|__ _ _ ___| _ \___| |__ _ _  _   
+|_   _|__ _ _ ___| _ \___| |__ _ _  _
   | |/ _ \ '_|___|   / -_) / _` | || |_
   |_|\___/_|     |_|_\___|_\__,_|\_, (_)
                                  |__/
@@ -148,8 +153,8 @@ echoInfo "Adding Torproject apt repository..."
   wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null && echoSuccess "-> OK" || handleError
   sudo apt -y update && echoSuccess "-> OK" || handleError
   sudo apt -y install tor deb.torproject.org-keyring && echoSuccess "-> OK" || handleError
-  fi 
-  
+  fi
+
   sudo apt-get -y update && echoSuccess "-> OK" || handleError
   sudo apt-get install tor psmisc dirmngr -y && echoSuccess "-> OK" || handleError
 elif [ "$os" == "arch" ]; then
@@ -187,7 +192,7 @@ ContactInfo $contactInfo [tor-relay.dev]
 ORPort $orPort
 DirPort $dirPort
 ExitRelay   0
-SocksPort   0   
+SocksPort   0
 ExitPolicy reject *:*
 $(if [ "$trafficLimit" != "nolimit" ]; then echo "AccountingMax $trafficLimit"; fi)
 $(if [ "$maxBandwidth" != "nolimit" ]; then echo "RelayBandwidthRate $maxBandwidth"; fi)
@@ -228,7 +233,7 @@ then
   elif [ "$os" == "arch" ]; then
     sudo pacman -S --noconfirm git && echoSuccess "-> OK" || handleError
     git clone https://aur.archlinux.org/obfs4proxy.git && echoSuccess "-> OK" || handleError
-    cd obfs4proxy && makepkg -irs && echoSuccess "-> OK" || handleError   
+    cd obfs4proxy && makepkg -irs && echoSuccess "-> OK" || handleError
   elif [ "$os" == "centos" ]; then
     sudo yum install -y git golang policycoreutils-python-utils && echoSuccess "-> OK" || handleError
     export GOPATH=$(mktemp -d)
@@ -241,6 +246,7 @@ then
 BridgeRelay  1
 ServerTransportPlugin obfs4 exec /usr/bin/obfs4proxy
 ServerTransportListenAddr obfs4  0.0.0.0:$obsf4Port
+$(if [ "$iatMode" = "1" ]; then echo "ServerTransportOptions obfs4 iat-mode=1"; fi)
 ExtORPort auto
 Nickname $relayName
 ContactInfo $contactInfo [tor-relay.dev]
@@ -282,7 +288,7 @@ then
   if [ "$os" == "debian" ] || [ "$os" == "ubuntu" ]; then
     sudo apt-get install nyx -y
   elif [ "$os" == "arch" ]; then
-    sudo pacman -S --noconfirm nyx 
+    sudo pacman -S --noconfirm nyx
   elif [ "$os" == "centos" ]; then
     sudo yum -y install nyx
   fi
