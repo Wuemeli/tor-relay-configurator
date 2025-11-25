@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run middle install script
         run: bash ./public/scripts/install.sh -s --os ubuntu --node-type relay --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port  --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true
@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run exit install script
         run: bash ./public/scripts/install.sh -s --os ubuntu --node-type exit --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --block-bad-ips true --dir-port 9030
@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run bridge install script
         run: bash ./public/scripts/install.sh -s --os ubuntu --node-type bridge --relay-name test-relay --contact-info uwu@gmail.com --or-port 9001 --dir-port 9030 --traffic-limit nolimit --max-bandwidth nolimit --max-burst-bandwidth nolimit --enable-nyx-monitoring true --obsf4-port 9000
