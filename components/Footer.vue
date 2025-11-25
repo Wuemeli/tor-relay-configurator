@@ -4,11 +4,7 @@
     >
         <p class="mb-2">
             Made with 💖 by
-            <a
-                href="https://github.com/wuemeli"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="underline"
+            <a href="https://wuemeli.com" target="_blank" class="underline"
                 >Wuemeli</a
             >
         </p>
