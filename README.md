@@ -1,3 +1,5 @@
+# MOVED TO https://codeberg.org/wuemeli/tor-relay-configurator
+
 # TOR-Relay Configurator
 
 > A Tool to create your own TOR-Relay with a few clicks. <br>
